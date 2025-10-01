@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>웹페이지</title>
+	<link rel="stylesheet" href="/public/main.css">
+</head>
+
+<body>
+
+	<!-- Home -->
+	<div class="container">
+		<!-- 네비게이션 -->
+		<div class="box nav">
+			<a href="" id="home_btn">Home</a>
+			<a href="" id="posts_btn">Posts</a>
+			<a href="" id="write_btn">Write</a>
+			<a href="" id="login_btn">Login</a>
+		</div>
+	</div>
+
+	<div id="main_div" class="container hide" name="home_btn">
+		<!-- 날씨 -->
+		<div class="weather">
+			<div class="box">날씨</div>
+			<div class="box">날씨</div>
+		</div>
+
+		<!-- 리스트 -->
+		<div class="box list-small">List</div>
+		<div class="box list-large">List 목록</div>
+
+		<!-- 작성 -->
+		<div class="write">
+			<div class="box">작성 글</div>
+			<div class="box">작성 댓글</div>
+		</div>
+	</div>
+
+	<!-- Posts -->
+	<div id="main_div" class="container hide" name="posts_btn">
+		<table>
+			<thead>
+				<tr>
+					<th>번호</th>
+					<th>제목</th>
+					<th>작성자</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr>
+					<td>123</td>
+					<td>123</td>
+					<td>123</td>
+				</tr>
+
+				<tr>
+					<td>123</td>
+					<td>123</td>
+					<td>123</td>
+				</tr>
+
+				<tr>
+					<td>123</td>
+					<td>123</td>
+					<td>123</td>
+				</tr>
+
+				<tr>
+					<td>123</td>
+					<td>123</td>
+					<td>123</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div id="main_div" class="container hide" name="write_btn">Write</div>
+
+	<div id="main_div" class="container modal hide" name="login_btn">Login
+		<div class="modal_body">
+			<div>
+				<h2>로그인</h2>
+
+				<form id="login_form">
+					<div class="form_group">
+						<label for="user_id">ID</label>
+						<input type="text" id="user_id" name="user_id" placeholder="ID를 입력해주세요" required>
+					</div>
+
+					<div class="form_group">
+						<label for="user_pw">PW</label>
+						<input type="password" id="user_pw" name="user_pw" placeholder="PW를 입력해주세요" required>
+					</div>
+					<button type="submit">로그인</button>
+          <button id="login_close_btn" name="login_close_btn">닫기</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<script src="public/app.js"></script>
+</body>
+
+</html>
