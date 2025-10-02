@@ -18,12 +18,72 @@ const dbConfig = {
 	poolAlias: "project_01_Pool" // 풀 이름 지정
 }
 
+app.get("/posts", async (req, res) => {
+	let oracleDB
+	try {
+		oracleDB = await oracledb.getConnection(dbConfig.poolAlias);
+		let sql = `SELECT * FROM post ORDER BY post_no DESC`
+		let result = await oracleDB.execute(sql)
+		res.status(200).json(result.rows)
+	} catch (err) {
+		console.log(err);
+		console.log(`"get /posts[try]" 에러 발생`);
+	} finally {
+		if (oracleDB) {
+			try {
+				await oracleDB.close();
+			} catch (err) { // 에러 발생
+				console.log(err);
+				console.log(`"get /posts[finally]" 에러 발생`);
+			}
+		}
+	}
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 이 아래는 서버 구동 관련
 async function initialize() {
 	try {
 		await oracledb.createPool(dbConfig);
-		console.log("projectPool: 연결 성공 (initialize)");
+		console.log("[project_01_Pool: 연결 성공 (initialize)]");
 	} catch (err) {
-		console.log("projectPool: 연결 실패 (initialize)");
+		console.log("[project_01_Pool: 연결 성공 (initialize)]");
 		process.exit(1);
 	}
 };
@@ -33,7 +93,8 @@ const port = 7000;
 async function startServer() {
 	await initialize(); // oracle 연결을 위한 pool을 만듬
 	app.listen(port, () => {
-		console.log(`서버 on http://localhost:${port} (startServer)`);
+		console.log(
+			`[project_01_Pool: 서버 on http://localhost:${port} (startServer)]`);
 	})
 };
-
+startServer();
