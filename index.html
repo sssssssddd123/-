@@ -17,7 +17,10 @@
 			<a href="" id="home_btn">Home</a>
 			<a href="" id="posts_btn">Posts</a>
 			<a href="" id="write_btn">Write</a>
-			<a href="" id="login_btn">Login</a>
+			<span>
+				<a href="" id="login_btn">Login</a>
+				<a href="" id="sign_btn">Sign up</a>
+			</span>
 		</div>
 	</div>
 
@@ -78,25 +81,127 @@
 		</table>
 	</div>
 
-	<div id="main_div" class="container hide" name="write_btn">Write</div>
+	<!-- 글쓰기 -->
+	<div id="main_div" class="container hide" name="write_btn">
+		<form id="write_form" class="write-form" action="/submit_post" method="POST">
+			<div class="form_group">
+				<label for="write_title">제목</label>
+				<input type="text" id="write_title" name="title" placeholder="제목을 입력하세요" required>
+			</div>
 
+			<div class="form_group">
+				<label for="write_content">내용</label>
+				<textarea id="write_content" name="content" placeholder="내용을 입력하세요" required></textarea>
+			</div>
+
+			<button type="submit">등록</button>
+		</form>
+	</div>
+
+	<!-- 로그인 -->
 	<div id="main_div" class="container modal hide" name="login_btn">Login
 		<div class="modal_body">
 			<div>
 				<h2>로그인</h2>
-
-				<form id="login_form">
+				<form id="login_form" class="custom-form">
 					<div class="form_group">
 						<label for="user_id">ID</label>
 						<input type="text" id="user_id" name="user_id" placeholder="ID를 입력해주세요" required>
 					</div>
-
 					<div class="form_group">
 						<label for="user_pw">PW</label>
 						<input type="password" id="user_pw" name="user_pw" placeholder="PW를 입력해주세요" required>
 					</div>
-					<button type="submit">로그인</button>
-          <button id="login_close_btn" name="login_close_btn">닫기</button>
+					<br>
+					<button type="submit" class="form-btn">로그인</button>
+					<button type="button" id="find_btn" class="form-btn">ID / PW 찾기</button>
+					<button type="button" class="close_btn form-btn" name="close_btn">닫기</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- 회원가입 -->
+	<div id="main_div" class="container modal hide" name="sign_btn">Sign up
+		<div class="modal_body">
+			<div>
+				<h2>회원가입</h2>
+
+				<form id="sign_form">
+					<div class="form_group">
+						<label for="sign_id">ID</label>
+						<input type="text" id="sign_id" name="sign_id" placeholder="6자 이상 입력해주세요" required>
+					</div>
+
+					<div class="form_group">
+						<label for="sign_pw">PW</label>
+						<input type="password" id="sign_pw" name="sign_pw" placeholder="8자 이상 입력해주세요" required>
+					</div>
+
+					<div class="form_group">
+						<label for="sign_pwcheck"></label>
+						<input type="password" id="sign_pwcheck" name="sign_pwcheck" placeholder="PW 확인" required>
+					</div>
+
+					<div class="form_group">
+						<label for="sign_name">이름</label>
+						<input type="text" id="sign_name" name="sign_name" required>
+					</div>
+
+					<div class="form_group">
+						<label for="sign_tel">전화번호</label>
+						<input type="tel" id="sign_tel" name="sign_tel" placeholder="-는 제외하고 입력해주세요" required>
+					</div>
+					<br>
+
+					<button type="submit">회원가입</button>
+					<button class="close_btn" name="close_btn">닫기</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- ID / PW 찾기 -->
+	<div id="main_div" class="container modal hide" name="find_btn">Find
+		<div class="modal_body">
+			<div>
+				<h2>ID / PW 찾기</h2>
+
+				<!-- ID 찾기 Form -->
+				<form id="find_id_form">
+					<div class="form_group">
+						<label for="find_name">이름</label>
+						<input type="text" id="find_name" name="find_name" required>
+					</div>
+
+					<div class="form_group">
+						<label for="find_tel">전화번호</label>
+						<input type="tel" id="find_tel" name="find_tel" placeholder="-는 제외하고 입력해주세요" required>
+					</div>
+
+					<button type="submit">ID 찾기</button>
+				</form>
+
+				<!-- PW 찾기 Form -->
+				<form id="find_pw_form">
+					<div class="form_group">
+						<label for="find_id">ID</label>
+						<input type="text" id="find_id" name="find_id" required>
+					</div>
+
+					<div class="form_group">
+						<label for="find_name_pw">이름</label>
+						<input type="text" id="find_name_pw" name="find_name_pw" required>
+					</div>
+
+					<div class="form_group">
+						<label for="find_tel_pw">전화번호</label>
+						<input type="tel" id="find_tel_pw" name="find_tel_pw" placeholder="-는 제외하고 입력해주세요" required>
+					</div>
+
+					<button type="submit">PW 찾기</button>
+					<button type="button" class="close_btn" name="close_btn">닫기</button>
+				</form>
 				</form>
 			</div>
 		</div>
