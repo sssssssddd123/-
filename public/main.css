@@ -211,11 +211,16 @@ body {
 	text-align: center;
 }
 
-/* form 전체 공통 */
-.custom-form {
+/* form 전체 */
+#login_form,
+#sign_form,
+#find_form,
+#find_id_form,
+#find_pw_form {
 	display: flex;
 	flex-direction: column;
-	gap: 16px; /* 각 input 그룹 간 간격 */
+	gap: 16px;
+	/* 각 input 그룹 간 간격 */
 	margin-top: 20px;
 }
 
@@ -236,25 +241,26 @@ body {
 }
 
 /* 입력창 */
-.form_group input,
-.form_group textarea {
+.form_group input {
 	padding: 10px 12px;
 	border: 1px solid #ccc;
 	border-radius: 8px;
 	font-size: 14px;
 	outline: none;
 	transition: border-color 0.2s, box-shadow 0.2s;
-	resize: vertical; /* textarea 크기 조절 가능 */
 }
 
-.form_group input:focus,
-.form_group textarea:focus {
+.form_group input:focus {
 	border-color: #FFA94D;
 	box-shadow: 0 0 4px rgba(255, 169, 77, 0.4);
 }
 
 /* 버튼 공통 스타일 */
-.form-btn {
+#login_form button,
+#sign_form button,
+#find_form button,
+#find_id_form button,
+#find_pw_form button {
 	padding: 12px 0;
 	border: none;
 	border-radius: 8px;
@@ -262,10 +268,23 @@ body {
 	font-size: 14px;
 	cursor: pointer;
 	transition: background-color 0.2s, transform 0.1s;
-	background-color: #FFE7C0;
 }
 
-.form-btn:hover {
+/* 로그인 버튼 */
+#login_form button[type="submit"],
+#sign_form button[type="submit"],
+#find_form button[type="submit"] ,
+#find_id_form button[type="submit"],
+#find_pw_form button[type="submit"] {
+	background-color: #FFE7C0;
+	/* margin-bottom: 8px; */
+}
+
+#login_form button[type="submit"]:hover,
+#sign_form button[type="submit"]:hover,
+#find_form button[type="submit"]:hover,
+#find_id_form button[type="submit"]:hover,
+#find_pw_form button[type="submit"]:hover {
 	background-color: #FFD78C;
 	transform: translateY(-1px);
 }
