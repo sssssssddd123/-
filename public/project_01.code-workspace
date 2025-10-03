@@ -8,9 +8,12 @@
 		},
 		{
 			"path": "../../web-master/public/js/project_01"
+		},
+		{
+			"path": "../../../Dev/web-master/public/js"
 		}
 	],
 	"settings": {
-		"liveServer.settings.multiRootWorkspaceName": "project_01"
+		"liveServer.settings.multiRootWorkspaceName": "-"
 	}
 }

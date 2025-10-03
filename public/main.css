@@ -116,6 +116,14 @@ body {
 	display: none;
 }
 
+#main_div {
+	max-height: calc(100vh - 60px);
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+	padding-right: 8px;
+	box-sizing: border-box;
+}
+
 /* 메모지 스타일 테이블 */
 #main_div table {
 	width: 100%;
@@ -209,6 +217,9 @@ body {
 	background: #fff;
 	border-radius: 10px;
 	text-align: center;
+	max-height: 80vh;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
 }
 
 /* form 전체 */
@@ -273,7 +284,7 @@ body {
 /* 로그인 버튼 */
 #login_form button[type="submit"],
 #sign_form button[type="submit"],
-#find_form button[type="submit"] ,
+#find_form button[type="submit"],
 #find_id_form button[type="submit"],
 #find_pw_form button[type="submit"] {
 	background-color: #FFE7C0;
@@ -308,6 +319,9 @@ body {
 	padding: 16px;
 	border-radius: 12px;
 	box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+	max-height: calc(100vh - 100px);
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
 }
 
 /* 입력 그룹 */
@@ -330,7 +344,8 @@ body {
 	padding: 10px;
 	border: 1px solid #ccc;
 	border-radius: 8px;
-	font-size: 14px;
+	font-family: 'Nanum Gothic', sans-serif;
+	font-size: 0.9rem;
 	resize: vertical;
 }
 

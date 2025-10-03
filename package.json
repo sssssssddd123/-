@@ -1,0 +1,24 @@
+{
+  "name": "-",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000-\u0000\r\u0000 \u0000",
+  "main": "autoLiveServer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sssssssddd123/-.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sssssssddd123/-/issues"
+  },
+  "homepage": "https://github.com/sssssssddd123/-#readme",
+  "dependencies": {
+    "live-server": "^1.2.2",
+    "portscanner": "^2.2.0"
+  }
+}
