@@ -1,4 +1,4 @@
-const express = require("express"); // express = 웹서버
+const express = require("express");
 const oracledb = require("oracledb");
 const cors = require("cors");
 
@@ -18,6 +18,17 @@ const dbConfig = {
 	poolAlias: "project_01_Pool" // 풀 이름 지정
 }
 
+// console_success(route)
+function console_success(route) {
+	console.log(`[${route} 실행 완료]`);
+	console.log(`------------------------------------------------`);
+}
+// console_err(err)
+function console_err(err) {
+	console.error(err)
+	console.log(`------------------------------------------------`);
+}
+
 // 서버 구동 관련
 const port = 7000;
 async function startServer() {
@@ -33,11 +44,9 @@ async function startServer() {
 async function makePool() { // oracle 연결을 위한 pool을 만듬
 	try {
 		await oracledb.createPool(dbConfig);
-		console.log("[Pool 생성 완료 (initialize)]");
-		console.log(`------------------------------------------------`);
+		console_success("makePool(함수)");
 	} catch (err) {
-		console.log("[Pool 생성 에러 발생 (initialize)]");
-		console.log(`------------------------------------------------`);
+		console_err(err);
 		process.exit(1);
 	}
 };
@@ -52,19 +61,14 @@ app.get("/posts", async (req, res) => {
 		let result = await connection.execute(sql);
 		res.status(200).json(result.rows);
 	} catch (err) {
-		console.log(err);
-		console.log(`[get /posts[try] 에러 발생]`);
-		console.log(`------------------------------------------------`);
+		console_err(err);
 	} finally {
 		if (connection) {
 			try {
 				await connection.close();
-				console.log(`[get /posts] 목록 출력]`);
-				console.log(`------------------------------------------------`);
-			} catch (err) { // 에러 발생
-				console.log(err);
-				console.log(`[get /posts[finally] 에러 발생]`);
-				console.log(`------------------------------------------------`);
+				console_success("app.get /posts");
+			} catch (err) {
+				console_err(err);
 			}
 		}
 	}
@@ -80,32 +84,53 @@ app.post("/write", async (req, res) => {
 			write_post(:write_id, :write_title, :write_content);
 		END;
 		`;
-		const binds = {
-			write_id: 'seung',
-			write_title: req.body.write_title,
-			write_content: req.body.write_content
+		const binds = {};
+		for (let item in req.body) {
+			binds[item] = req.body[item];
 		};
-
-		// const binds = {};
-		// for (let item in req.body) {
-		// 	binds[item] = req.body[item];
-		// };
-
 		await connection.execute(sql, binds, { autoCommit: true });
 	} catch (err) {
-		console.log(err);
-		console.log(`[post /write[try] 에러 발생]`);
-		console.log(`------------------------------------------------`);
+		console_err(err);
 	} finally {
 		if (connection) {
 			try {
 				await connection.close();
-				console.log(`[post /write 전송 완료]`);
-				console.log(`------------------------------------------------`);
-			} catch (err) { // 에러 발생
-				console.log(err);
-				console.log(`[post /write[finally] 에러 발생]`);
-				console.log(`------------------------------------------------`);
+				console_success("app.post /write");
+			} catch (err) {
+				console_err(err);
+			}
+		}
+	}
+});
+
+// login할 시 user data를 html로 전송해 줌
+app.post("/login", async (req, res) => {
+	let connection;
+	try {
+		connection = await oracledb.getConnection(dbConfig.poolAlias);
+		let sql = `
+		SELECT user_id, user_pw FROM users u
+		WHERE user_id = :html_id
+		AND user_pw = :html_pw
+		`;
+		const binds = {
+			html_id: req.body.user_id,
+			html_pw: req.body.user_pw
+		};
+		const result = await connection.execute(sql, binds, { autoCommit: true });
+		if (result.rows.length == 0) {
+			return res.status(401).json({ success: false, message: 'ID 또는 PW 불일치' });
+		}
+		res.status(200).json({ success: true, message: '로그인 성공', data: { user_id: result.rows[0].USER_ID } });
+	} catch (err) {
+		console_err(err);
+	} finally {
+		if (connection) {
+			try {
+				await connection.close();
+				console_success("app.post /login");
+			} catch (err) {
+				console_err(err);
 			}
 		}
 	}
@@ -114,25 +139,21 @@ app.post("/write", async (req, res) => {
 // 회원가입 시 중복된 id가 있는지 확인
 app.get("/", async (req, res) => {
 	let connection;
+	let sql;
 	try {
 		connection = await oracledb.getConnection(dbConfig.poolAlias);
-		let sql = `SELECT user_id FROM users`;
+		sql = `SELECT user_id FROM users`;
 		let result = await connection.execute(sql);
 		res.status(200).json(result.rows);
 	} catch (err) {
-		console.log(err);
-		console.log(`[get / [try] 에러 발생]`);
-		console.log(`------------------------------------------------`);
+		console_err(err);
 	} finally {
 		if (connection) {
 			try {
 				await connection.close();
-				console.log(`[get / 전송 완료]`);
-				console.log(`------------------------------------------------`);
-			} catch (err) { // 에러 발생
-				console.log(err);
-				console.log(`[get / [finally] 에러 발생]`);
-				console.log(`------------------------------------------------`);
+				console_success(`app.get SQL(${sql})`);
+			} catch (err) {
+				console_err(err);
 			}
 		}
 	}
@@ -152,21 +173,16 @@ app.post("/sign", async (req, res) => {
 		for (let item in req.body) {
 			binds[item] = req.body[item];
 		};
-		await connection.execute(sql, binds, { autoCommit: true });
+		// await connection.execute(sql, binds, { autoCommit: true });
 	} catch (err) {
-		console.log(err);
-		console.log(`[post /sign[try] 에러 발생]`);
-		console.log(`------------------------------------------------`);
+		console_err(err);
 	} finally {
 		if (connection) {
 			try {
 				await connection.close();
-				console.log(`[post /sign 전송 완료]`);
-				console.log(`------------------------------------------------`);
-			} catch (err) { // 에러 발생
-				console.log(err);
-				console.log(`[post /sign[finally] 에러 발생]`);
-				console.log(`------------------------------------------------`);
+				console_success("app.post /sign");
+			} catch (err) {
+				console_err(err);
 			}
 		}
 	}

@@ -17,14 +17,17 @@
 			<a href="" id="home_btn">Home</a>
 			<a href="" id="posts_btn">Posts</a>
 			<a href="" id="write_btn">Write</a>
-			<span>
+			<span id="log_off">
 				<a href="" id="login_btn">Login</a>
 				<a href="" id="sign_btn">Sign up</a>
+			</span>
+			<span id="log_on" class="hide">
+				<a href="" id="logout_btn" name="logout_btn">Logout</a>
 			</span>
 		</div>
 	</div>
 
-	<div id="main_div" class="container hide" name="home_btn">
+	<div id="main_div" class="container" name="home_btn">
 		<!-- 날씨 -->
 		<div class="weather">
 			<div class="box">날씨</div>
@@ -32,13 +35,13 @@
 		</div>
 
 		<!-- 리스트 -->
-		<div class="box list-small">List</div>
-		<div class="box list-large">List 목록</div>
+		<div class="box list-small">to do List</div>
+		<div id="todo_list" class="box list-large">List 목록</div>
 
 		<!-- 작성 -->
 		<div class="write">
-			<div class="box">작성 글</div>
-			<div class="box">작성 댓글</div>
+			<div id="my_post" class="box">작성 글</div>
+			<div id="my_comment" class="box">작성 댓글</div>
 		</div>
 	</div>
 
@@ -63,12 +66,12 @@
 		<form id="write_form" class="write-form" action="/submit_post" method="POST">
 			<div class="form_group">
 				<label for="write_title">제목</label>
-				<input type="text" id="write_title" name="write_title" placeholder="제목을 입력하세요" required value="이건 제목">
+				<input type="text" id="write_title" name="write_title" placeholder="제목을 입력하세요" required>
 			</div>
 
 			<div class="form_group">
 				<label for="write_content">내용</label>
-				<textarea id="write_content" name="write_content" placeholder="내용을 입력하세요" required>이건 내용</textarea>
+				<textarea id="write_content" name="write_content" placeholder="내용을 입력하세요" required></textarea>
 			</div>
 
 			<button type="submit" id="write_add">등록</button>
@@ -83,11 +86,11 @@
 				<form id="login_form" class="custom-form">
 					<div class="form_group">
 						<label for="user_id">ID</label>
-						<input type="text" id="user_id" name="user_id" placeholder="ID를 입력해주세요" required>
+						<input type="text" id="user_id" name="user_id" placeholder="ID를 입력해주세요" required value="seung">
 					</div>
 					<div class="form_group">
 						<label for="user_pw">PW</label>
-						<input type="password" id="user_pw" name="user_pw" placeholder="PW를 입력해주세요" required>
+						<input type="password" id="user_pw" name="user_pw" placeholder="PW를 입력해주세요" required value="1234">
 					</div>
 					<br>
 					<button type="submit" class="form-btn">로그인</button>
@@ -99,7 +102,7 @@
 	</div>
 
 	<!-- 회원가입 -->
-	<div id="main_div" class="container modal" name="sign_btn">Sign up
+	<div id="main_div" class="container modal hide" name="sign_btn">Sign up
 		<div class="modal_body">
 			<div>
 				<h2>회원가입</h2>
@@ -107,27 +110,27 @@
 				<form id="sign_form">
 					<div class="form_group">
 						<label for="sign_id">ID</label>
-						<input type="text" id="sign_id" name="sign_id" minlength="3" maxlength="10" placeholder="4자 이상 10자 이하 입력해주세요" required value="seung123">
+						<input type="text" id="sign_id" name="sign_id" minlength="3" maxlength="10" placeholder="4자 이상 10자 이하 입력해주세요" required>
 					</div>
 
 					<div class="form_group">
 						<label for="sign_pw">PW</label>
-						<input type="password" id="sign_pw" name="sign_pw" minlength="8" placeholder="8자 이상 입력해주세요" required value="12341234">
+						<input type="password" id="sign_pw" name="sign_pw" minlength="8" placeholder="8자 이상 입력해주세요" required>
 					</div>
 
 					<div class="form_group">
 						<label for="sign_pwcheck"></label>
-						<input type="password" id="sign_pwcheck" name="sign_pwcheck" minlength="8" placeholder="PW 확인" required value="12341234">
+						<input type="password" id="sign_pwcheck" name="sign_pwcheck" minlength="8" placeholder="PW 확인" required>
 					</div>
 
 					<div class="form_group">
 						<label for="sign_name">이름</label>
-						<input type="text" id="sign_name" name="sign_name" required value="승1">
+						<input type="text" id="sign_name" name="sign_name" required>
 					</div>
 
 					<div class="form_group">
 						<label for="sign_tel">전화번호</label>
-						<input type="tel" id="sign_tel" name="sign_tel" placeholder="- 포함해서 입력해주세요" required value="010-1234-1234">
+						<input type="tel" id="sign_tel" name="sign_tel" placeholder="- 포함해서 입력해주세요" required>
 					</div>
 					<br>
 
