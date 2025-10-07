@@ -61,17 +61,60 @@
 		</table>
 	</div>
 
+	<div id="main_div" class="container modal hide" name="posts_modal">
+		<div class="posts_modal_body">
+			<div class="post_modal_header">
+				<h2 id="modal_title">게시글 제목</h2>
+				<button type="button" class="close_btn" name="close_btn">×</button>
+			</div>
+
+			<div class="post_modal_meta">
+				<span id="modal_writer">작성자: 홍길동</span>
+				<span id="modal_date">2025-10-07</span>
+			</div>
+
+			<hr class="modal_divider">
+
+			<div class="post_modal_content" id="modal_content">
+				<p>
+					본문1
+				</p>
+			</div>
+
+			<hr class="modal_divider">
+
+			<div class="post_modal_comment_section">
+				<h3>댓글</h3>
+				<div class="comment_list" id="comment_list">
+					<div class="comment_item">
+						<span class="comment_user">user123</span>
+						<p class="comment_text">댓글1</p>
+					</div>
+					<div class="comment_item">
+						<span class="comment_user">appledev</span>
+						<p class="comment_text">댓글2</p>
+					</div>
+				</div>
+
+				<form id="comment_form" class="comment_form">
+					<input type="text" id="comment_input" placeholder="댓글을 입력하세요..." required>
+					<button type="submit">등록</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
 	<!-- 글쓰기 -->
 	<div id="main_div" class="container hide" name="write_btn">
 		<form id="write_form" class="write-form" action="/submit_post" method="POST">
 			<div class="form_group">
 				<label for="write_title">제목</label>
-				<input type="text" id="write_title" name="write_title" placeholder="제목을 입력하세요" required>
+				<input type="text" id="write_title" name="write_title" placeholder="제목을 입력하세요">
 			</div>
 
 			<div class="form_group">
 				<label for="write_content">내용</label>
-				<textarea id="write_content" name="write_content" placeholder="내용을 입력하세요" required></textarea>
+				<textarea id="write_content" name="write_content" placeholder="내용을 입력하세요"></textarea>
 			</div>
 
 			<button type="submit" id="write_add">등록</button>
@@ -86,11 +129,11 @@
 				<form id="login_form" class="custom-form">
 					<div class="form_group">
 						<label for="user_id">ID</label>
-						<input type="text" id="user_id" name="user_id" placeholder="ID를 입력해주세요" required value="seung">
+						<input type="text" id="user_id" name="user_id" placeholder="ID를 입력해주세요" required>
 					</div>
 					<div class="form_group">
 						<label for="user_pw">PW</label>
-						<input type="password" id="user_pw" name="user_pw" placeholder="PW를 입력해주세요" required value="1234">
+						<input type="password" id="user_pw" name="user_pw" placeholder="PW를 입력해주세요" required>
 					</div>
 					<br>
 					<button type="submit" class="form-btn">로그인</button>

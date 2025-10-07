@@ -1,13 +1,9 @@
 body {
-	/* margin: 0;
-	font-family: 'Arial', sans-serif;
-	background-color: #FFF8F0;
-	color: #333; */
+	/* margin: 0; font-family: 'Arial', sans-serif; background-color: #FFF8F0; color: #333; */
 	margin: 0;
 	font-family: Arial, sans-serif;
 	background-color: rgba(250, 247, 244, 6);
 	/* 은은한 베이지 */
-
 	/* 미세한 노이즈 효과 */
 	background-image: radial-gradient(rgba(0, 0, 0, 0.08) 1px, transparent 1px);
 	background-size: 10px 10px;
@@ -130,7 +126,6 @@ body {
 	border-collapse: collapse;
 	table-layout: fixed;
 	font-size: 14px;
-
 	border-radius: 12px;
 	box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 	overflow: hidden;
@@ -369,4 +364,209 @@ body {
 	transform: translateY(2px);
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 	/* 터치 시 그림자 약간 감소 */
+}
+
+/* 게시글 모달 (iOS 유리 느낌) */
+.posts_modal_body {
+	position: relative;
+	width: 90%;
+	/* 대부분의 기기에서 화면의 90% 차지 */
+	max-width: min(600px, 90vw);
+	/* 600px보다 작으면 화면 비율(90vw)에 맞게 줄어듦 */
+	background: rgba(255, 255, 255, 0.65);
+	backdrop-filter: blur(15px);
+	-webkit-backdrop-filter: blur(15px);
+	/* iOS Safari 대응 */
+	border-radius: 20px;
+	padding: 24px;
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+	animation: fadeIn 0.3s ease-in-out;
+}
+
+/* 📱 작은 모바일 (아이폰 SE~13 Mini 등) */
+@media (max-width: 480px) {
+	.posts_modal_body {
+		position: absolute;
+		top: 10%;
+		width: 85%;
+		max-width: 85vw;
+		padding: 18px;
+		border-radius: 16px;
+		gap: 14px;
+	}
+}
+
+/* 💻 큰 화면 (노트북 이상) */
+@media (min-width: 1024px) {
+	.posts_modal_body {
+		width: 60%;
+		max-width: 700px;
+	}
+}
+
+/* fadeIn animation */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* 제목 + 닫기 버튼 */
+.post_modal_header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.post_modal_header h2 {
+	font-size: 1.4rem;
+	font-weight: 700;
+	color: #333;
+	margin: 0;
+}
+
+.post_modal_header .close_btn {
+	background: none;
+	border: none;
+	font-size: 1.6rem;
+	color: #555;
+	cursor: pointer;
+	transition: color 0.2s;
+}
+
+.post_modal_header .close_btn:hover {
+	color: #000;
+}
+
+/* 작성자 + 날짜 */
+.post_modal_meta {
+	display: flex;
+	justify-content: space-between;
+	font-size: 0.85rem;
+	color: #666;
+	font-weight: 500;
+}
+
+/* 구분선 */
+.modal_divider {
+	border: none;
+	height: 1px;
+	background: rgba(0, 0, 0, 0.08);
+}
+
+/* 본문 */
+.post_modal_content {
+	text-align: left;
+	line-height: 1.6;
+	color: #333;
+	font-size: 0.95rem;
+	font-weight: 400;
+	padding: 0 4px;
+	word-break: break-word;
+	/* 긴 단어 줄바꿈 대응 */
+}
+
+/* 댓글 섹션 */
+.post_modal_comment_section {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.post_modal_comment_section h3 {
+	font-size: 1.1rem;
+	margin-bottom: 4px;
+	color: #333;
+}
+
+/* 댓글 리스트 */
+.comment_list {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	max-height: 200px;
+	overflow-y: auto;
+	padding-right: 6px;
+	scrollbar-width: thin;
+	scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+/* 크롬 스크롤바 감성 처리 */
+.comment_list::-webkit-scrollbar {
+	width: 6px;
+}
+
+.comment_list::-webkit-scrollbar-thumb {
+	background-color: rgba(0, 0, 0, 0.2);
+	border-radius: 4px;
+}
+
+/* 댓글 항목 */
+.comment_item {
+	background: rgba(255, 255, 255, 0.6);
+	border-radius: 12px;
+	padding: 10px 12px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+	text-align: left;
+}
+
+.comment_user {
+	font-weight: 600;
+	color: #444;
+	margin-right: 6px;
+	display: block;
+	font-size: 0.9rem;
+}
+
+.comment_text {
+	margin: 4px 0 0;
+	color: #333;
+	font-size: 0.9rem;
+}
+
+/* 댓글 입력 폼 */
+.comment_form {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.comment_form input {
+	flex: 1;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	outline: none;
+	transition: border-color 0.2s, box-shadow 0.2s;
+	font-size: 0.9rem;
+}
+
+.comment_form input:focus {
+	border-color: #FFA94D;
+	box-shadow: 0 0 4px rgba(255, 169, 77, 0.4);
+}
+
+.comment_form button {
+	padding: 10px 16px;
+	border: none;
+	border-radius: 10px;
+	background-color: #FFE7C0;
+	font-weight: 600;
+	font-size: 0.9rem;
+	cursor: pointer;
+	transition: background-color 0.2s, transform 0.1s;
+}
+
+.comment_form button:hover {
+	background-color: #FFD78C;
+	transform: translateY(-1px);
 }

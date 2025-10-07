@@ -23,11 +23,6 @@ function console_success(route) {
 	console.log(`[${route} 실행 완료]`);
 	console.log(`------------------------------------------------`);
 }
-// console_err(err)
-function console_err(err) {
-	console.error(err)
-	console.log(`------------------------------------------------`);
-}
 
 // 서버 구동 관련
 const port = 7000;
@@ -46,58 +41,67 @@ async function makePool() { // oracle 연결을 위한 pool을 만듬
 		await oracledb.createPool(dbConfig);
 		console_success("makePool(함수)");
 	} catch (err) {
-		console_err(err);
+		console.log(err);
 		process.exit(1);
 	}
 };
 startServer(); // 서버 가동
+
+// sql 작성에 필요한 keys, binds 입력 함수
+function createKeysBind(data) {
+	const beginKeys = Object.keys(data).map(key => `:${key}`).join(', ');
+	const selectKeys = Object.keys(data).map(key => `${key} = :${key}`).join(' AND ');
+	const binds = {};
+	for (let key in data) {
+		binds[key] = data[key];
+	};
+	return { beginKeys, selectKeys, binds };
+};
 
 // 글 목록을 html에 전송
 app.get("/posts", async (req, res) => {
 	let connection;
 	try {
 		connection = await oracledb.getConnection(dbConfig.poolAlias);
-		let sql = `SELECT * FROM post ORDER BY post_no DESC`
+		let sql = `SELECT * FROM post ORDER BY CREATED_AT DESC`
 		let result = await connection.execute(sql);
 		res.status(200).json(result.rows);
 	} catch (err) {
-		console_err(err);
+		console.log(err);
 	} finally {
 		if (connection) {
 			try {
 				await connection.close();
 				console_success("app.get /posts");
 			} catch (err) {
-				console_err(err);
+				console.log(err);
 			}
 		}
 	}
-})
+});
 
 // 글쓰기 데이터를 oracle로 전송
 app.post("/write", async (req, res) => {
 	let connection;
 	try {
 		connection = await oracledb.getConnection(dbConfig.poolAlias);
+		const { beginKeys, binds } = createKeysBind(req.body);
 		let sql = `
 		BEGIN
-			write_post(:write_id, :write_title, :write_content);
+			write_post(${beginKeys});
 		END;
 		`;
-		const binds = {};
-		for (let item in req.body) {
-			binds[item] = req.body[item];
-		};
+		console.log(sql)
 		await connection.execute(sql, binds, { autoCommit: true });
 	} catch (err) {
-		console_err(err);
+		console.log(err);
 	} finally {
 		if (connection) {
 			try {
 				await connection.close();
 				console_success("app.post /write");
 			} catch (err) {
-				console_err(err);
+				console.log(err);
 			}
 		}
 	}
@@ -108,36 +112,32 @@ app.post("/login", async (req, res) => {
 	let connection;
 	try {
 		connection = await oracledb.getConnection(dbConfig.poolAlias);
+		const { selectKeys, binds } = createKeysBind(req.body);
 		let sql = `
-		SELECT user_id, user_pw FROM users u
-		WHERE user_id = :html_id
-		AND user_pw = :html_pw
+		SELECT * FROM users
+		WHERE ${selectKeys}
 		`;
-		const binds = {
-			html_id: req.body.user_id,
-			html_pw: req.body.user_pw
-		};
 		const result = await connection.execute(sql, binds, { autoCommit: true });
 		if (result.rows.length == 0) {
 			return res.status(401).json({ success: false, message: 'ID 또는 PW 불일치' });
 		}
 		res.status(200).json({ success: true, message: '로그인 성공', data: { user_id: result.rows[0].USER_ID } });
 	} catch (err) {
-		console_err(err);
+		console.log(err);
 	} finally {
 		if (connection) {
 			try {
 				await connection.close();
 				console_success("app.post /login");
 			} catch (err) {
-				console_err(err);
+				console.log(err);
 			}
 		}
 	}
 });
 
 // 회원가입 시 중복된 id가 있는지 확인
-app.get("/", async (req, res) => {
+app.get("/idCheck", async (req, res) => {
 	let connection;
 	let sql;
 	try {
@@ -146,14 +146,14 @@ app.get("/", async (req, res) => {
 		let result = await connection.execute(sql);
 		res.status(200).json(result.rows);
 	} catch (err) {
-		console_err(err);
+		console.log(err);
 	} finally {
 		if (connection) {
 			try {
 				await connection.close();
 				console_success(`app.get SQL(${sql})`);
 			} catch (err) {
-				console_err(err);
+				console.log(err);
 			}
 		}
 	}
@@ -163,26 +163,23 @@ app.get("/", async (req, res) => {
 app.post("/sign", async (req, res) => {
 	let connection;
 	try {
-		connection = await oracledb.getConnection(dbConfig.poolAlias);;
+		connection = await oracledb.getConnection(dbConfig.poolAlias);
+		const { beginKeys, binds } = createKeysBind(req.body);
 		let sql = `
 		BEGIN
-			add_user(:sign_id, :sign_pw, :sign_name, :sign_tel);
+			add_user(${beginKeys});
 		END;
 		`;
-		const binds = {};
-		for (let item in req.body) {
-			binds[item] = req.body[item];
-		};
-		// await connection.execute(sql, binds, { autoCommit: true });
+		await connection.execute(sql, binds, { autoCommit: true });
 	} catch (err) {
-		console_err(err);
+		console.log(err);
 	} finally {
 		if (connection) {
 			try {
 				await connection.close();
 				console_success("app.post /sign");
 			} catch (err) {
-				console_err(err);
+				console.log(err);
 			}
 		}
 	}
