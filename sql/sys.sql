@@ -1,0 +1,32 @@
+SELECT username FROM all_users ORDER BY username;
+
+--ALTER SESSION SET "_oracle_script"=TRUE;
+
+--CREATE USER scott
+--IDENTIFIED BY tiger
+--DEFAULT TABLESPACE USERS
+--TEMPORARY TABLESPACE temp;
+
+ALTER SESSION SET "_oracle_script"=TRUE;
+
+CREATE USER hr
+IDENTIFIED BY hr
+DEFAULT TABLESPACE USERS
+TEMPORARY TABLESPACE temp;
+
+GRANT CONNECT, RESOURCE, CREATE VIEW, UNLIMITED TABLESPACE
+TO hr;
+
+GRANT CREATE VIEW TO scott;
+
+
+--------------------------------------------------------------------------------
+SELECT * 
+FROM tab;
+
+SELECT * 
+FROM dba_users
+WHERE username = 'SCOTT';
+
+ALTER USER SCOTT ACCOUNT UNLOCK;
+
