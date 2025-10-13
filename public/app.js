@@ -21,9 +21,9 @@ function is_online() {
 // 메인 화면 / todo, 작성 글, 댓글
 function resetMain() {
 	if (!is_online()) {
-		todo_list.textContent = "로그인하시면 todo list를 이용하실 수 있습니다 :)";
-		my_post.textContent = "회원님의 생각을 마음껏 작성해 주세요!";
-		my_comment.textContent = "다른 회원님과 생각을 공유해보시는 건 어떤가요?";
+		todo_list.textContent = "log off";
+		my_post.textContent = "log off";
+		my_comment.textContent = "log off";
 		document.querySelector(`[name="home_btn"]`).classList.remove('hide');
 		document.getElementById('log_off').classList.remove('hide');
 		document.getElementById('log_on').classList.add('hide');
@@ -40,7 +40,7 @@ resetMain();
 
 // 온라인 체크
 function online_check() {
-	alert("죄송합니다. \n저희 사이트는 로그인을 하셔야 이용이 가능합니다. :)");
+	alert("로그인을 해주세요.");
 	btmIds.forEach(btn_name => {
 		const btn = document.querySelector(`[name="${btn_name}"]`);
 		if (btn_name !== 'login_btn') {
@@ -49,12 +49,6 @@ function online_check() {
 			btn.classList.remove('hide')
 		};
 	});
-}
-
-// console_success(route)
-function console_success(route) {
-	console.log(`[${route} 실행 완료]`);
-	console.log('------------------------------------------------');
 }
 
 // fetchDB(route)
@@ -81,6 +75,8 @@ async function postJSON(data, route) {
 }
 
 // 게시글 리스트 출력
+const postCloseBtn = document.querySelector(`[name="posts_modal"] button`);
+const postModal = document.querySelector(`[name="posts_modal"]`);
 async function postBtn(btn) {
 	if (btn == 'posts_btn' || btn == 'write_form') {
 		const tbody = document.querySelector('#posts_table tbody');
@@ -89,12 +85,52 @@ async function postBtn(btn) {
 			tbody.innerHTML = ''; // 게시글 리스트 초기화 후 새로 출력해 줌
 			result.forEach(item => tbody.appendChild(makeRow(item))); // makeRow = tr 반환
 			document.querySelectorAll('.post_click').forEach(item => {
-				item.addEventListener('click', function() { // 게시글 클릭 이벤트
+				item.addEventListener('click', async function() { // 게시글 클릭 이벤트
 					if (!is_online()) { // 온라인 체크
 						online_check();
 						return;
-					}
-					console.log(this.children[1].innerHTML);
+					};
+					const postNo = this.querySelectorAll('td')[0].innerText;
+					const thisData = result.find(item => item.POST_NO == postNo);
+					const commentsDB = await postJSON({ postNo: postNo }, 'postComments');
+					for (let item in thisData) { // 게시글 본문(제목, 작성자, 작성시간, 내용)
+						let thisModal = document.querySelector(`[name=${item}]`);
+						if (thisModal) {
+							thisModal.innerText = thisData[item];
+						}
+					};
+					postModal.classList.remove('hide');
+					let postComment = document.getElementById('comment_list'); // 댓글 리스트
+					postComment.innerHTML = "";
+					if (commentsDB.length == 0) {
+						let div = document.createElement('div'); // 댓글 div
+						let span = document.createElement('span'); // 댓글 작성자
+						let p = document.createElement('p'); // 댓글 내용
+						span.innerText = "빈 댓글 test";
+						p.innerText = "빈 댓글 test";
+						span.setAttribute('class', 'comment_user');
+						p.setAttribute('class', 'comment_text');
+						div.setAttribute('class', 'comment_item');
+						div.appendChild(span);
+						div.appendChild(p);
+						postComment.parentElement.dataset.name = postNo;
+						postComment.appendChild(div);
+						return;
+					};
+					commentsDB.forEach(item => {
+						let div = document.createElement('div'); // 댓글 div
+						let span = document.createElement('span'); // 댓글 작성자
+						let p = document.createElement('p'); // 댓글 내용
+						span.innerText = item.USER_ID;
+						p.innerText = item.POST_COMMENT;
+						span.setAttribute('class', 'comment_user');
+						p.setAttribute('class', 'comment_text');
+						div.setAttribute('class', 'comment_item');
+						div.appendChild(span);
+						div.appendChild(p);
+						postComment.parentElement.dataset.name = postNo;
+						postComment.appendChild(div);
+					});
 				});
 			});
 		} catch (err) {
@@ -107,9 +143,10 @@ async function postBtn(btn) {
 function makeRow(item) {
 	const fields = ["POST_NO", "POST_TITLE", "USER_ID"];
 	const tr = document.createElement('tr');
-	fields.forEach(f => {
+	fields.forEach(field => {
 		const td = document.createElement('td');
-		td.textContent = item[f];
+		td.dataset.name = field;
+		td.innerText = item[field];
 		tr.appendChild(td);
 	});
 	tr.classList.add('post_click');
@@ -120,6 +157,10 @@ function makeRow(item) {
 document.querySelectorAll(`[name="close_btn"]`).forEach(item => {
 	item.addEventListener('click', function(e) {
 		e.preventDefault();
+		if (this == postCloseBtn) {
+			this.closest('.modal').classList.add('hide');
+			return;
+		};
 		document.querySelector(`[name="home_btn"]`).classList.remove('hide');
 		this.closest('.modal').classList.add('hide');
 	});
@@ -150,6 +191,7 @@ async function btnClick(e) { // nav 버튼 속 if문 안에 쓰임
 		try {
 			const res = await fetch('http://localhost:7000/idCheck');
 			const ID_data = await res.json(); // id 중복 체크 데이터를 가져옴
+			console.log(ID_data);
 			idCheck = ID_data.map(value => value.USER_ID);
 		} catch (err) {
 			console.log(err);
@@ -159,7 +201,7 @@ async function btnClick(e) { // nav 버튼 속 if문 안에 쓰임
 		localStorage.setItem('user_id', '');
 		localStorage.setItem('online', 'false');
 		resetMain();
-		alert("시간내어 주셔서 감사합니다. \n앞으로도 많은 관심 부탁드려요 :)");
+		alert("log out");
 	};
 }
 
@@ -176,7 +218,7 @@ document.getElementById('write_form').addEventListener('submit', function(e) {
 		write_content: document.getElementById('write_content').value
 	};
 	if (Object.values(write_data).some(field => !field)) {
-		alert("제목 및 내용을 입력해 주세요. :(");
+		alert("제목 및 내용을 입력해 주세요.");
 		return;
 	};
 	postJSON(write_data, 'write');
@@ -186,10 +228,44 @@ document.getElementById('write_form').addEventListener('submit', function(e) {
 	document.querySelector(`[name="write_btn"]`).classList.add('hide');
 });
 
-// 회원가입
-let idCheck = []; // btnClick(e) 함수 속에 사용하는 전역변수
-document.getElementById('sign_form').addEventListener('submit', async function(e) {
-	e.preventDefault();
+// 댓글 작성
+document.getElementById('comment_form').addEventListener('submit',
+	async function(e) {
+		e.preventDefault();
+		const commentData = {
+			post_no: this.parentElement.dataset.name,
+			user_id: localStorage.getItem('user_id'),
+			post_comment: this.querySelectorAll('input')[0].value
+		};
+		await postJSON(commentData, "commentAdd");
+		postModal.classList.add('hide');
+		this.querySelectorAll('input')[0].value = "";
+		const newCommentsDB = await postJSON({
+			postNo: commentData.post_no
+		}, 'postComments');
+		let postComment = document.getElementById('comment_list'); // 댓글 리스트
+		postComment.innerHTML = "";
+		newCommentsDB.forEach(item => {
+			let div = document.createElement('div'); // 댓글 div
+			let span = document.createElement('span'); // 댓글 작성자
+			let p = document.createElement('p'); // 댓글 내용
+			span.innerText = item.USER_ID;
+			p.innerText = item.POST_COMMENT;
+			span.setAttribute('class', 'comment_user');
+			p.setAttribute('class', 'comment_text');
+			div.setAttribute('class', 'comment_item');
+			div.appendChild(span);
+			div.appendChild(p);
+			postComment.parentElement.dataset.name = commentData.post_no;
+			postComment.appendChild(div);
+			postModal.classList.remove('hide');
+		})
+	});
+	
+	// 회원가입
+	let idCheck = []; // btnClick(e) 함수 속에 사용하는 전역변수
+	document.getElementById('sign_form').addEventListener('submit', async function(e) {
+		e.preventDefault();
 	const data = {};
 	const pwCheck = document.getElementById('sign_pwcheck').value;
 	const korean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
@@ -211,12 +287,12 @@ document.getElementById('sign_form').addEventListener('submit', async function(e
 		alert("ID는 영어, 숫자, 특수문자만 사용 가능합니다.");
 		return;
 	};
-	if (data.sign_pw !== pwCheck) {
+	if (data.sign_pw != pwCheck) {
 		alert("동일한 PW를 입력해주세요.");
 		return;
 	};
-	postJSON(data, 'sign');
-	alert("뉴페이스는 오랜만이네요! 반가워요 :)");
+	await postJSON(data, 'sign');
+	alert("반갑습니다.");
 	document.querySelector(`[name="home_btn"]`).classList.remove('hide');
 	this.closest('.modal').classList.add('hide');
 });
@@ -229,17 +305,17 @@ document.getElementById('login_form').addEventListener('submit', async function(
 		user_pw: document.getElementById('user_pw').value
 	};
 	const dbData = await postJSON(htmlData, 'login');
-	if (dbData.success) {
-		this.closest('.modal').classList.add('hide');
-		this.reset();
-		document.querySelector(`[name="home_btn"]`).classList.remove('hide');
-		document.getElementById('log_off').classList.add('hide');
-		document.getElementById('log_on').classList.remove('hide');
-		localStorage.setItem('user_id', dbData.data.user_id);
-		localStorage.setItem('online', 'true');
-		resetMain();
-		alert(`반갑습니다 ${htmlData.user_id}. \n오늘 하루는 어땠나요?`);
-	} else {
-		alert("ID 또는 PW가 맞지 않습니다. \n다시 확인해 보시는 건 어떨까요?");
-	}
+	if (!dbData.success) {
+		alert("ID 또는 PW가 맞지 않습니다.");
+		return;
+	};
+	this.closest('.modal').classList.add('hide');
+	this.reset();
+	document.querySelector(`[name="home_btn"]`).classList.remove('hide');
+	document.getElementById('log_off').classList.add('hide');
+	document.getElementById('log_on').classList.remove('hide');
+	localStorage.setItem('user_id', dbData.data);
+	localStorage.setItem('online', 'true');
+	resetMain();
+	alert(`반갑습니다 ${dbData.data}.`);
 });

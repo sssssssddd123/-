@@ -64,40 +64,34 @@
 	<div id="main_div" class="container modal hide" name="posts_modal">
 		<div class="posts_modal_body">
 			<div class="post_modal_header">
-				<h2 id="modal_title">게시글 제목</h2>
-				<button type="button" class="close_btn" name="close_btn">×</button>
+				<h2 id="modal_title" name="POST_TITLE"></h2>
+				<button type="button" class="close_btn" name="close_btn">x</button>
 			</div>
 
 			<div class="post_modal_meta">
-				<span id="modal_writer">작성자: 홍길동</span>
-				<span id="modal_date">2025-10-07</span>
+				<span id="modal_name" name="USER_ID"></span>
+				<span id="modal_date" name="CREATED_AT"></span>
 			</div>
 
 			<hr class="modal_divider">
 
 			<div class="post_modal_content" id="modal_content">
-				<p>
-					본문1
-				</p>
+				<p name="POST_CONTENT"></p>
 			</div>
 
 			<hr class="modal_divider">
 
 			<div class="post_modal_comment_section">
 				<h3>댓글</h3>
-				<div class="comment_list" id="comment_list">
-					<div class="comment_item">
-						<span class="comment_user">user123</span>
-						<p class="comment_text">댓글1</p>
-					</div>
-					<div class="comment_item">
-						<span class="comment_user">appledev</span>
-						<p class="comment_text">댓글2</p>
+				<div id="comment_list" class="comment_list">
+					<div id="notComment" class="comment_item">
+						<span class="comment_user"></span>
+						<p class="comment_text"></p>
 					</div>
 				</div>
 
 				<form id="comment_form" class="comment_form">
-					<input type="text" id="comment_input" placeholder="댓글을 입력하세요..." required>
+					<input type="text" id="comment_input" placeholder="댓글을 입력해주세요." required>
 					<button type="submit">등록</button>
 				</form>
 			</div>
@@ -153,27 +147,27 @@
 				<form id="sign_form">
 					<div class="form_group">
 						<label for="sign_id">ID</label>
-						<input type="text" id="sign_id" name="sign_id" minlength="3" maxlength="10" placeholder="4자 이상 10자 이하 입력해주세요" required>
+						<input type="text" id="sign_id" name="sign_id" minlength="3" maxlength="10" placeholder="4자 이상 10자 이하 입력해주세요" required value="seung6">
 					</div>
 
 					<div class="form_group">
 						<label for="sign_pw">PW</label>
-						<input type="password" id="sign_pw" name="sign_pw" minlength="8" placeholder="8자 이상 입력해주세요" required>
+						<input type="password" id="sign_pw" name="sign_pw" minlength="8" placeholder="8자 이상 입력해주세요" required value="12341234">
 					</div>
 
 					<div class="form_group">
 						<label for="sign_pwcheck"></label>
-						<input type="password" id="sign_pwcheck" name="sign_pwcheck" minlength="8" placeholder="PW 확인" required>
+						<input type="password" id="sign_pwcheck" name="sign_pwcheck" minlength="8" placeholder="PW 확인" required value="12341234">
 					</div>
 
 					<div class="form_group">
 						<label for="sign_name">이름</label>
-						<input type="text" id="sign_name" name="sign_name" required>
+						<input type="text" id="sign_name" name="sign_name" required value="승6">
 					</div>
 
 					<div class="form_group">
 						<label for="sign_tel">전화번호</label>
-						<input type="tel" id="sign_tel" name="sign_tel" placeholder="- 포함해서 입력해주세요" required>
+						<input type="tel" id="sign_tel" name="sign_tel" placeholder="- 포함해서 입력해주세요" required value="010-1234-1234">
 					</div>
 					<br>
 
