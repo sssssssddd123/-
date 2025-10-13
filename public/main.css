@@ -765,6 +765,76 @@ body {
 	}
 }
 
+/* ✅ To-Do 개별 항목 (메모지 느낌) */
+.todo_item {
+	background: #fffdf7;
+	/* 따뜻한 종이색 */
+	border-radius: 12px;
+	padding: 12px 16px;
+	margin-bottom: 8px;
+	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+	font-size: 0.95rem;
+	color: #333;
+	font-family: 'Nanum Gothic', sans-serif;
+	transition: transform 0.1s ease, box-shadow 0.2s ease;
+	cursor: pointer;
+	text-align: left;
+	/* ✅ 왼쪽 정렬 */
+	justify-content: flex-start;
+	/* (혹시 flex 사용 시 대비용) */
+}
+
+/* ✅ Hover 시 메모지 들림 효과 */
+.todo_item:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* ✅ 클릭 시 간단한 강조 효과 */
+.todo_item:active {
+	transform: scale(0.98);
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ 완료 항목 표시 */
+.todo_item.done {
+	text-decoration: line-through;
+	color: #999;
+	background: rgba(255, 240, 200, 0.7);
+}
+
+
+.todo_table td {
+	text-align: left !important;
+	/* ✅ 강제로 왼쪽 정렬 */
+}
+
+#todo_list {
+	display: block !important;
+	/* flex → block */
+	text-align: left !important;
+	/* 좌측 정렬 유지 */
+	padding-left: 10px;
+	max-height: 220px;
+	/* ✅ 기존 높이 유지 */
+	overflow-y: auto;
+	/* ✅ 스크롤 활성화 */
+	scrollbar-width: thin;
+	/* ✅ Firefox */
+	scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+	-webkit-overflow-scrolling: touch;
+	/* ✅ 모바일(iOS) 부드러운 스크롤 */
+}
+
+/* ✅ 크롬/모바일용 커스텀 스크롤바 */
+#todo_list::-webkit-scrollbar {
+	width: 6px;
+}
+
+#todo_list::-webkit-scrollbar-thumb {
+	background-color: rgba(0, 0, 0, 0.2);
+	border-radius: 4px;
+}
 
 .hide {
 	display: none;

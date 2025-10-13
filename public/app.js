@@ -61,6 +61,20 @@ function makeTodo(data, tag) { // to do list를 만들어 줌
 		td = document.createElement('td');
 		tr = document.createElement('tr');
 		td.innerText = item["TODO_CONTENT"];
+		td.dataset.todo_no = item["TODO_NO"];
+		td.setAttribute('class', 'todo_item');
+		td.addEventListener('click', async function() {
+			if (this.classList.contains('done')) {
+				const todoDel = confirm("삭제하시겠습니까?");
+				if (todoDel) {
+					const data = { todo_no: this.dataset.todo_no };
+					await postJSON(data, "todoDel");
+					console.log("test")
+					this.closest('tr').remove();
+				}
+			}
+			this.classList.toggle('done'); // 완료 표시 토글
+		});
 		tr.appendChild(td);
 		tb.appendChild(tr);
 	});

@@ -302,7 +302,7 @@ app.post("/todoDBget", async (req, res) => {
 	try {
 		connection = await oracledb.getConnection(dbConfig.poolAlias);
 		let sql = `
-		SELECT todo_content
+		SELECT todo_no, todo_content
 		FROM todolist
 		WHERE user_id = :user_id
 		ORDER BY todo_no DESC
@@ -310,6 +310,35 @@ app.post("/todoDBget", async (req, res) => {
 		const binds = { user_id: req.body.user_id };
 		const result = await connection.execute(sql, binds, { autoCommit: true });
 		res.status(200).json(result.rows);
+	} catch (err) {
+		console.log(err);
+	} finally {
+		if (connection) {
+			try {
+				await connection.close();
+				console_success("app.post /todoAdd");
+			} catch (err) {
+				console.log(err);
+			}
+		}
+	}
+});
+
+
+
+app.post("/todoDel", async (req, res) => {
+	let connection;
+	try {
+		connection = await oracledb.getConnection(dbConfig.poolAlias);
+		let sql = `
+		DELETE FROM todolist
+		WHERE todo_no = :todo_no
+		`;
+		const binds = {
+			todo_no: req.body.todo_no
+		};
+		await connection.execute(sql, binds, { autoCommit: true });
+		res.status(200).json([]);
 	} catch (err) {
 		console.log(err);
 	} finally {

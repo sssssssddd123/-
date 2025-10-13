@@ -273,10 +273,13 @@ JOIN post p ON u.user_id = p.user_id
 WHERE u.user_id = 'seung'
 ORDER BY post_no;
 
-SELECT todo_content
+SELECT todo_no, todo_content
 FROM todolist
 WHERE user_id = 'seung'
 ORDER BY todo_no DESC;
+
+DELETE FROM todolist
+WHERE todo_no = '7';
 
 SELECT 
     post_no
