@@ -35,13 +35,51 @@
 		</div>
 
 		<!-- 리스트 -->
-		<div class="box list-small">to do List</div>
-		<div id="todo_list" class="box list-large">List 목록</div>
+		<div id="to_do_btn" class="box list-small">to do List</div>
+		<div id="todo_list" class="box list-large">List 목록
+
+		</div>
 
 		<!-- 작성 -->
 		<div class="write">
 			<div id="my_post" class="box">작성 글</div>
 			<div id="my_comment" class="box">작성 댓글</div>
+		</div>
+	</div>
+
+	<!-- 📄 To Do List 모달 -->
+	<div id="main_div" class="container modal hide" name="to_do_btn">
+		<div class="todo_modal_body">
+			<div class="todo_modal_header">
+				<h2>to do list</h2>
+				<button type="button" class="close_btn" name="close_btn">x</button>
+			</div>
+
+			<!-- 📌 To-Do 작성 영역 -->
+			<form id="todo_form" class="todo_form">
+				<div class="form_group">
+					<input type="text" id="todo_title" name="todo_title" required value="test">
+				</div>
+				<div>
+					<button type="submit" class="todo_submit_btn">추가</button>
+				</div>
+			</form>
+
+			<hr class="modal_divider">
+
+			<!-- 📋 To-Do 리스트 -->
+			<div class="todo_list_section">
+				<table id="todo_table" class="todo_table">
+					<thead>
+						<tr>
+							<th>to do</th>
+						</tr>
+					</thead>
+					<tbody id="todo_tbody">
+						<!-- JS로 동적 생성 예정 -->
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 
@@ -114,7 +152,7 @@
 			<button type="submit" id="write_add">등록</button>
 		</form>
 	</div>
- 
+
 	<!-- 로그인 -->
 	<div id="main_div" class="container modal hide" name="login_btn">Login
 		<div class="modal_body">
@@ -152,12 +190,12 @@
 
 					<div class="form_group">
 						<label for="sign_pw">PW</label>
-						<input type="password" id="sign_pw" name="sign_pw" minlength="8" placeholder="8자 이상 입력해주세요" required>
+						<input type="password" id="sign_pw" name="sign_pw" minlength="6" placeholder="6자 이상 입력해주세요" required>
 					</div>
 
 					<div class="form_group">
 						<label for="sign_pwcheck"></label>
-						<input type="password" id="sign_pwcheck" name="sign_pwcheck" minlength="8" placeholder="PW 확인" required>
+						<input type="password" id="sign_pwcheck" name="sign_pwcheck" minlength="6" placeholder="PW 확인" required>
 					</div>
 
 					<div class="form_group">

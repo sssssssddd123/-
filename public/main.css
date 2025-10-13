@@ -10,6 +10,7 @@ body {
 	/* 노이즈 밀도 조절 */
 }
 
+
 .container {
 	display: flex;
 	flex-direction: column;
@@ -108,10 +109,6 @@ body {
 	padding: 16px;
 }
 
-.hide {
-	display: none;
-}
-
 #main_div {
 	max-height: calc(100vh - 60px);
 	overflow-y: auto;
@@ -184,10 +181,6 @@ body {
 	transition: 0.2s;
 }
 
-.modal.hide {
-	display: none;
-}
-
 .modal {
 	position: fixed;
 	top: 0;
@@ -199,7 +192,8 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	z-index: 1000;
+	z-index: 9999;
+	/* ✅ 최상위 */
 }
 
 .modal_body {
@@ -214,6 +208,10 @@ body {
 	max-height: 80vh;
 	overflow-y: auto;
 	-webkit-overflow-scrolling: touch;
+}
+
+.modal.hide {
+	display: none;
 }
 
 /* form 전체 */
@@ -569,4 +567,205 @@ body {
 .comment_form button:hover {
 	background-color: #FFD78C;
 	transform: translateY(-1px);
+}
+
+/* 본문 */
+.todo_modal_body {
+	position: absolute;
+	top: 10%;
+	width: 90%;
+	max-width: 500px;
+	background: rgba(255, 255, 255, 0.88);
+	backdrop-filter: blur(15px);
+	-webkit-backdrop-filter: blur(15px);
+	border-radius: 20px;
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+	padding: 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	animation: fadeIn 0.25s ease-in-out;
+	font-family: "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* 헤더 */
+.todo_modal_header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.todo_modal_header h2 {
+	font-size: 1.3rem;
+	font-weight: 700;
+	color: #333;
+	margin: 0;
+}
+
+.todo_modal_header .close_btn {
+	background: none;
+	border: none;
+	font-size: 1.5rem;
+	color: #666;
+	cursor: pointer;
+	transition: color 0.2s;
+}
+
+.todo_modal_header .close_btn:hover {
+	color: #000;
+}
+
+.todo_form {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	gap: 10px;
+	/* input과 버튼 사이 일정 간격 */
+	box-sizing: border-box;
+}
+
+/* 입력창 */
+.todo_form input {
+	flex-grow: 1;
+	/* ✅ 남은 공간 전부 채움 */
+	flex-shrink: 1;
+	min-width: 0;
+	/* ✅ flex overflow 방지 */
+	padding: 10px 12px;
+	height: 40px;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: 12px;
+	background: rgba(255, 255, 255, 0.7);
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+	font-size: 0.9rem;
+	color: #333;
+	outline: none;
+	transition: border-color 0.2s, box-shadow 0.2s;
+	box-sizing: border-box;
+}
+
+.todo_form input:focus {
+	border-color: #FFD78C;
+	box-shadow: 0 0 4px rgba(255, 169, 77, 0.4);
+}
+
+/* 추가 버튼 */
+.todo_submit_btn {
+	flex-shrink: 0;
+	/* ✅ 버튼 크기 고정 */
+	padding: 0 18px;
+	height: 40px;
+	background-color: #FFE7C0;
+	border: none;
+	border-radius: 10px;
+	font-weight: 600;
+	font-size: 0.9rem;
+	cursor: pointer;
+	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+	transition: background-color 0.2s, transform 0.1s;
+	white-space: nowrap;
+	/* ✅ margin-left 제거 */
+}
+
+.todo_submit_btn:hover {
+	background-color: #FFD78C;
+	transform: translateY(-1px);
+}
+
+/* 리스트 영역 */
+.todo_list_section {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.todo_list_section h3 {
+	font-size: 1.1rem;
+	color: #333;
+	margin: 0;
+}
+
+/* 테이블 스타일 */
+.todo_table {
+	width: 100%;
+	border-collapse: collapse;
+	table-layout: fixed;
+	font-size: 0.9rem;
+	border-radius: 12px;
+	box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+	overflow: hidden;
+	background-color: rgba(255, 255, 255, 0.8);
+}
+
+.todo_table thead {
+	background-color: rgba(255, 231, 192, 0.5);
+}
+
+.todo_table th,
+.todo_table td {
+	padding: 10px;
+	text-align: center;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+	color: #333;
+}
+
+.todo_table th:first-child,
+.todo_table td:first-child {
+	width: 20%;
+}
+
+.todo_table th:nth-child(2),
+.todo_table td:nth-child(2) {
+	width: 60%;
+}
+
+.todo_table th:nth-child(3),
+.todo_table td:nth-child(3) {
+	width: 20%;
+}
+
+.todo_table tbody tr:hover {
+	background-color: rgba(255, 240, 200, 0.8);
+	transition: background-color 0.2s;
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* 반응형 */
+@media (max-width: 480px) {
+	.todo_modal_body {
+		top: 10%;
+		width: 85%;
+		padding: 20px;
+		border-radius: 16px;
+	}
+
+	.todo_form input {
+		font-size: 0.85rem;
+	}
+
+	.todo_form {
+		gap: 8px;
+	}
+
+	.todo_submit_btn {
+		padding: 0 14px;
+		font-size: 0.85rem;
+	}
+}
+
+
+.hide {
+	display: none;
 }

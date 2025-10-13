@@ -69,7 +69,7 @@ ALTER TABLE users ADD CONSTRAINT UQ_USERS_USER_ID UNIQUE (user_id);
 CREATE TABLE post (
     post_no       NUMBER(5, 0) NOT NULL,
     user_id       VARCHAR2(20 BYTE) NOT NULL,
-    post_title    VARCHAR2(20 BYTE) NOT NULL,
+    post_title    VARCHAR2(70 BYTE) NOT NULL,
     post_content  VARCHAR2(1000 BYTE) NOT NULL,
     created_at    DATE NOT NULL,
     updated_at    DATE NOT NULL
@@ -86,7 +86,7 @@ CREATE TABLE comment_all (
 CREATE TABLE todolist (
     todo_no       NUMBER(5, 0) NOT NULL,
     user_id       VARCHAR2(20 BYTE) NOT NULL,
-    todo_content  VARCHAR2(50 BYTE) NULL
+    todo_content  VARCHAR2(100 BYTE) NULL
 );
 
 ALTER TABLE post ADD CONSTRAINT PK_POST PRIMARY KEY (post_no);
@@ -157,6 +157,24 @@ BEGIN
 END;
 /
 
+-- To-Do 작성
+CREATE OR REPLACE PROCEDURE write_todo (
+    p_user_id      IN VARCHAR2,
+    p_todo_content IN VARCHAR2
+)
+AS
+BEGIN
+    INSERT INTO todolist (
+        todo_no, user_id, todo_content
+    )
+    SELECT SEQ_TODO_NO.NEXTVAL, u.user_id, p_todo_content
+    FROM users u
+    WHERE u.user_id = p_user_id;
+
+    COMMIT;
+END;
+/
+
 -- =====================================
 -- 4️⃣ 뷰 생성 (최근 글 / 최근 댓글)
 -- =====================================
@@ -205,6 +223,12 @@ EXEC write_post('lee', '여섯 번째 글', '여섯 번째 내용');
 -- 댓글쓰기
 EXEC write_comment('seung', 2, '여섯 번째 댓글');
 
+-- to do
+BEGIN
+    write_todo('seung', '방 청소하기');
+END;
+/
+
 
 -- 최근 10개의 글 조회
 SELECT * FROM recent_posts_view
@@ -219,7 +243,6 @@ SELECT * FROM users;
 SELECT * FROM post;
 SELECT * FROM comment_all;
 SELECT * FROM todolist;
-
 --------------------------------------------------------------------------------
 SELECT * FROM post ORDER BY post_no DESC;
 
@@ -249,6 +272,11 @@ FROM users u
 JOIN post p ON u.user_id = p.user_id
 WHERE u.user_id = 'seung'
 ORDER BY post_no;
+
+SELECT todo_content
+FROM todolist
+WHERE user_id = 'seung'
+ORDER BY todo_no DESC;
 
 SELECT 
     post_no

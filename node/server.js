@@ -82,7 +82,7 @@ app.get("/posts", async (req, res) => {
 	}
 });
 
-// 글쓰기 데이터를 oracle로 전송
+// 글작성 데이터를 oracle로 전송
 app.post("/write", async (req, res) => {
 	let connection;
 	try {
@@ -97,6 +97,7 @@ app.post("/write", async (req, res) => {
 			binds[key] = req.body[key];
 		};
 		await connection.execute(sql, binds, { autoCommit: true });
+		res.status(200).json([]);
 	} catch (err) {
 		console.log(err);
 	} finally {
@@ -251,6 +252,7 @@ app.post("/sign", async (req, res) => {
 			binds[key] = req.body[key];
 		};
 		await connection.execute(sql, binds, { autoCommit: true });
+		res.status(200).json([]);
 	} catch (err) {
 		console.log(err);
 	} finally {
@@ -258,6 +260,63 @@ app.post("/sign", async (req, res) => {
 			try {
 				await connection.close();
 				console_success("app.post /sign");
+			} catch (err) {
+				console.log(err);
+			}
+		}
+	}
+});
+
+// todo Add
+app.post("/todoAdd", async (req, res) => {
+	let connection;
+	try {
+		connection = await oracledb.getConnection(dbConfig.poolAlias);
+		let sql = `
+		BEGIN
+			write_todo(:user_id, :todo_content);
+		END;
+		`;
+		const binds = {};
+		for (let key in req.body) {
+			binds[key] = req.body[key];
+		};
+		await connection.execute(sql, binds, { autoCommit: true });
+		res.status(200).json([]);
+	} catch (err) {
+		console.log(err);
+	} finally {
+		if (connection) {
+			try {
+				await connection.close();
+				console_success("app.post /todoAdd");
+			} catch (err) {
+				console.log(err);
+			}
+		}
+	}
+});
+
+app.post("/todoDBget", async (req, res) => {
+	let connection;
+	try {
+		connection = await oracledb.getConnection(dbConfig.poolAlias);
+		let sql = `
+		SELECT todo_content
+		FROM todolist
+		WHERE user_id = :user_id
+		ORDER BY todo_no DESC
+		`;
+		const binds = { user_id: req.body.user_id };
+		const result = await connection.execute(sql, binds, { autoCommit: true });
+		res.status(200).json(result.rows);
+	} catch (err) {
+		console.log(err);
+	} finally {
+		if (connection) {
+			try {
+				await connection.close();
+				console_success("app.post /todoAdd");
 			} catch (err) {
 				console.log(err);
 			}

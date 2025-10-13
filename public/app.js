@@ -10,53 +10,16 @@ const btmIds = [
 	"login_btn",
 	"logout_btn",
 	"sign_btn",
-	"find_btn"
+	"find_btn",
+	"to_do_btn"
 ];
-
-// 로그인 확인
-function is_online() {
-	return localStorage.getItem('online') == 'true';
-}
-
-// 메인 화면 / todo, 작성 글, 댓글
-function resetMain() {
-	if (!is_online()) {
-		todo_list.textContent = "log off";
-		my_post.textContent = "log off";
-		my_comment.textContent = "log off";
-		document.querySelector(`[name="home_btn"]`).classList.remove('hide');
-		document.getElementById('log_off').classList.remove('hide');
-		document.getElementById('log_on').classList.add('hide');
-	} else {
-		todo_list.textContent = "test";
-		my_post.textContent = "test";
-		my_comment.textContent = "test";
-		document.querySelector(`[name="home_btn"]`).classList.remove('hide');
-		document.getElementById('log_off').classList.add('hide');
-		document.getElementById('log_on').classList.remove('hide');
-	}
-}
-resetMain();
-
-// 온라인 체크
-function online_check() {
-	alert("로그인을 해주세요.");
-	btmIds.forEach(btn_name => {
-		const btn = document.querySelector(`[name="${btn_name}"]`);
-		if (btn_name !== 'login_btn') {
-			btn.classList.add('hide')
-		} else {
-			btn.classList.remove('hide')
-		};
-	});
-}
 
 // fetchDB(route)
 async function fetchDB(route) {
 	const res = await fetch(`http://localhost:7000/${route}`);
 	if (!res.ok) throw new Error('[fetchDB(route) 에러 발생]');
 	return res.json();
-}
+};
 
 // postJSON(data, route)
 async function postJSON(data, route) {
@@ -72,7 +35,78 @@ async function postJSON(data, route) {
 		console.log(err);
 		return { success: false, message: "[postJSON(data, route) 에러 발생]" };
 	}
+};
+
+// 로그인 확인
+function is_online() {
+	return localStorage.getItem('online') == 'true';
+};
+
+// 온라인 체크
+function online_check() {
+	alert("로그인을 해주세요.");
+	btmIds.forEach(btn_name => {
+		const btn = document.querySelector(`[name="${btn_name}"]`);
+		if (btn_name !== 'login_btn') {
+			btn.classList.add('hide')
+		} else {
+			btn.classList.remove('hide')
+		};
+	});
+};
+
+function makeTodo(data, tag) { // to do list를 만들어 줌
+	tb = document.createElement(tag);
+	data.forEach(item => {
+		td = document.createElement('td');
+		tr = document.createElement('tr');
+		td.innerText = item["TODO_CONTENT"];
+		tr.appendChild(td);
+		tb.appendChild(tr);
+	});
+	return tb;
+};
+
+// 메인 화면
+// todo, 작성 글, 댓글
+async function todoListAdd() { // to do list 만들기위한 DB를 가져옴
+	const data = { user_id: localStorage.getItem('user_id') };
+	const todoDB = await postJSON(data, "todoDBget");
+	todo_list.innerHTML = "";
+	todo_list.appendChild(makeTodo(todoDB, 'todo_tbody'));
+};
+
+// to do를 서버에 전송
+document.getElementById('todo_form').addEventListener('submit',
+	async function(e) {
+		e.preventDefault();
+		const todoData = {
+			user_id: localStorage.getItem('user_id'),
+			todo_content: this.querySelector('input').value
+		};
+		await postJSON(todoData, "todoAdd");
+		await resetMain();
+	}
+);
+
+async function resetMain() { // main 화면 reset
+	if (!is_online()) {
+		todo_list.textContent = "log off";
+		my_post.textContent = "log off";
+		my_comment.textContent = "log off";
+		document.querySelector(`[name="home_btn"]`).classList.remove('hide');
+		document.getElementById('log_off').classList.remove('hide');
+		document.getElementById('log_on').classList.add('hide');
+	} else {
+		await todoListAdd();
+		my_post.textContent = "test";
+		my_comment.textContent = "test";
+		document.querySelector(`[name="home_btn"]`).classList.remove('hide');
+		document.getElementById('log_off').classList.add('hide');
+		document.getElementById('log_on').classList.remove('hide');
+	}
 }
+resetMain();
 
 // 게시글 리스트 출력
 const postCloseBtn = document.querySelector(`[name="posts_modal"] button`);
@@ -139,7 +173,7 @@ async function postBtn(btn) {
 	};
 };
 
-// 게시글 행(tr) 생성
+// makeRow(item) 게시글 행(tr) 생성
 function makeRow(item) {
 	const fields = ["POST_NO", "POST_TITLE", "USER_ID"];
 	const tr = document.createElement('tr');
@@ -175,15 +209,24 @@ btmIds.forEach(item => {
 	};
 });
 
+// btnClick(e)
 async function btnClick(e) { // nav 버튼 속 if문 안에 쓰임
 	e.preventDefault();
 	const btnName = this.dataset.name;
 	btmIds.forEach(item => {
 		const section = document.querySelector(`[name="${item}"]`);
+		if (section.getAttribute('name') == "to_do_btn") {
+			console.log(section.getAttribute('name'));
+			console.log(this.getAttribute('name')); // 모든 버튼을 눌러도 작동 되는데 to do list 버튼을 누르면 작동하도록 에러 수정하기
+			// if (!is_online()) {
+			// 	online_check();
+			// 	return;
+			// }
+		};
 		if (item != btnName) {
 			section.classList.add('hide');
 			return;
-		}
+		};
 		section.classList.remove('hide');
 	});
 	postBtn(this.id); // post, write 게시글 리스트 출력 버튼
@@ -191,7 +234,7 @@ async function btnClick(e) { // nav 버튼 속 if문 안에 쓰임
 		try {
 			const res = await fetch('http://localhost:7000/idCheck');
 			const ID_data = await res.json(); // id 중복 체크 데이터를 가져옴
-			console.log(ID_data);
+			// console.log(ID_data);
 			idCheck = ID_data.map(value => value.USER_ID);
 		} catch (err) {
 			console.log(err);
@@ -206,27 +249,29 @@ async function btnClick(e) { // nav 버튼 속 if문 안에 쓰임
 }
 
 // 글 작성
-document.getElementById('write_form').addEventListener('submit', function(e) {
-	e.preventDefault();
-	if (!is_online()) {
-		online_check();
-		return;
+document.getElementById('write_form').addEventListener('submit',
+	async function(e) {
+		e.preventDefault();
+		if (!is_online()) {
+			online_check();
+			return;
+		}
+		const write_data = {
+			write_id: localStorage.getItem('user_id'),
+			write_title: document.getElementById('write_title').value,
+			write_content: document.getElementById('write_content').value
+		};
+		if (Object.values(write_data).some(field => !field)) {
+			alert("제목 및 내용을 입력해 주세요.");
+			return;
+		};
+		await postJSON(write_data, 'write');
+		this.reset();
+		postBtn(this.id);
+		document.querySelector(`[name="posts_btn"]`).classList.remove('hide');
+		document.querySelector(`[name="write_btn"]`).classList.add('hide');
 	}
-	const write_data = {
-		write_id: localStorage.getItem('user_id'),
-		write_title: document.getElementById('write_title').value,
-		write_content: document.getElementById('write_content').value
-	};
-	if (Object.values(write_data).some(field => !field)) {
-		alert("제목 및 내용을 입력해 주세요.");
-		return;
-	};
-	postJSON(write_data, 'write');
-	this.reset();
-	postBtn(this.id);
-	document.querySelector(`[name="posts_btn"]`).classList.remove('hide');
-	document.querySelector(`[name="write_btn"]`).classList.add('hide');
-});
+);
 
 // 댓글 작성
 document.getElementById('comment_form').addEventListener('submit',
@@ -260,12 +305,13 @@ document.getElementById('comment_form').addEventListener('submit',
 			postComment.appendChild(div);
 			postModal.classList.remove('hide');
 		})
-	});
-	
-	// 회원가입
-	let idCheck = []; // btnClick(e) 함수 속에 사용하는 전역변수
-	document.getElementById('sign_form').addEventListener('submit', async function(e) {
-		e.preventDefault();
+	}
+);
+
+// 회원가입
+let idCheck = []; // btnClick(e) 함수 속에 사용하는 전역변수
+document.getElementById('sign_form').addEventListener('submit', async function(e) {
+	e.preventDefault();
 	const data = {};
 	const pwCheck = document.getElementById('sign_pwcheck').value;
 	const korean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
@@ -316,6 +362,6 @@ document.getElementById('login_form').addEventListener('submit', async function(
 	document.getElementById('log_on').classList.remove('hide');
 	localStorage.setItem('user_id', dbData.data);
 	localStorage.setItem('online', 'true');
-	resetMain();
-	alert(`반갑습니다 ${dbData.data}.`);
+	await resetMain();
+	alert(`반갑습니다 ${localStorage.getItem('user_id')}.`);
 });
