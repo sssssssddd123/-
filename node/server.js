@@ -25,15 +25,14 @@ function console_success(route) {
 }
 
 // 서버 구동 관련
-const port = 7000;
+const port = 3000;
 async function startServer() {
 	// oracle 연결을 위한 pool을 만듬
 	await makePool();
-	app.listen(port, () => {
-		console.log(
-			`[서버 가동 http://localhost:${port} (startServer)]`);
+	app.listen(port, '0.0.0.0', () => {
+		console.log(`[서버 가동 http://192.168.0.45:${port} (startServer)]`);
 		console.log(`------------------------------------------------`);
-	})
+	});
 };
 
 async function makePool() { // oracle 연결을 위한 pool을 만듬
@@ -462,5 +461,20 @@ app.post("/myCommentDel", async (req, res) => {
 				console.log(err);
 			}
 		}
+	}
+});
+
+app.get("/idCheck", async (req, res) => {
+	let connection;
+	try {
+		connection = await oracledb.getConnection(dbConfig.poolAlias);
+		const sql = `SELECT user_id FROM users`;
+		const result = await connection.execute(sql);
+		res.status(200).json({ success: true, data: result.rows });
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ success: false, message: "idCheck 에러 발생" });
+	} finally {
+		if (connection) await connection.close();
 	}
 });

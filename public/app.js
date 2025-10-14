@@ -1,3 +1,108 @@
+// ✅ 두 개의 날씨 위젯 자동 로드
+window.addEventListener("DOMContentLoaded", () => {
+	loadWeatherWidget(1, "Seoul");
+	loadWeatherWidget(2, "Busan");
+});
+
+// ✅ 공용 함수: 특정 위젯 번호 + 도시 이름으로 날씨 불러오기
+async function loadWeatherWidget(num, city) {
+	const apiKey = "90b0af91e01445d4cb7100b34b3953e5";
+	const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=kr`;
+
+	try {
+		const res = await fetch(url);
+		const data = await res.json();
+
+		if (!data.weather || !data.main) return;
+
+		const iconUrl = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+		const now = new Date();
+		const timeStr = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes()
+      .toString()
+      .padStart(2, "0")} 현재`;
+
+		document.getElementById(`weatherIcon${num}`).src = iconUrl;
+		document.getElementById(`weatherDesc${num}`).textContent = data.weather[0].description;
+		document.getElementById(`temp${num}`).textContent = `${Math.round(data.main.temp)}°C`;
+		document.getElementById(`location${num}`).textContent = data.name;
+		document.getElementById(`time${num}`).textContent = timeStr;
+		document.getElementById(`wind${num}`).textContent = `${data.wind.speed}m/s`;
+		document.getElementById(`humidity${num}`).textContent = `${data.main.humidity}%`;
+	} catch (err) {
+		console.error(`[Weather${num} API Error]`, err);
+	}
+}
+
+async function loadWeather(city = "Seoul") {
+	const apiKey = "90b0af91e01445d4cb7100b34b3953e5"; // 실제 키 입력
+	const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=kr`;
+
+	try {
+		const res = await fetch(url);
+		const data = await res.json();
+
+		const iconUrl = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+		const now = new Date();
+		const timeStr = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")} 현재`;
+
+		document.getElementById("weatherIcon").src = iconUrl;
+		document.getElementById("weatherDesc").textContent = data.weather[0].description;
+		document.getElementById("temp").textContent = `${Math.round(data.main.temp)}°C`;
+		document.getElementById("location").textContent = data.name;
+		document.getElementById("time").textContent = timeStr;
+		document.getElementById("wind").textContent = `${data.wind.speed}m/s`;
+		document.getElementById("humidity").textContent = `${data.main.humidity}%`;
+	} catch (err) {
+		console.error("[Weather API Error]", err);
+		document.getElementById("location").textContent = "날씨 정보를 불러올 수 없습니다.";
+	}
+}
+
+// ✅ 위젯 클릭 → 도시 변경 모달
+let activeWidget = null;
+
+document.querySelectorAll(".weather-widget").forEach((widget, index) => {
+	widget.addEventListener("click", () => {
+		activeWidget = index + 1;
+		document.getElementById("cityModal").classList.remove("hide");
+	});
+});
+
+// ✅ 한글 → 영문 매핑 (OpenWeatherMap 호환용)
+const cityMap = {
+	"서울": "Seoul",
+	"부산": "Busan",
+	"대구": "Daegu",
+	"인천": "Incheon",
+	"광주": "Gwangju",
+	"대전": "Daejeon",
+	"울산": "Ulsan",
+	"수원": "Suwon",
+	"전주": "Jeonju",
+	"창원": "Changwon",
+	"청주": "Cheongju",
+	"춘천": "Chuncheon",
+	"포항": "Pohang",
+	"여수": "Yeosu",
+	"목포": "Mokpo",
+	"제주": "Jeju",
+	"경산": "Gyeongsan"
+};
+
+// ✅ 모달 “확인” 버튼 → 선택한 도시로 갱신
+document.getElementById("cityConfirm").addEventListener("click", () => {
+	const korName = document.getElementById("citySelect").value;
+	const engName = cityMap[korName] || korName; // 한글→영문 자동 변환
+	if (activeWidget) {
+		loadWeatherWidget(activeWidget, engName);
+		// 선택된 도시명을 위젯에도 표시
+		document.getElementById(`location${activeWidget}`).textContent = korName;
+	}
+	document.getElementById("cityModal").classList.add("hide");
+});
+
+
+
 // 자동 로그인
 const todo_list = document.getElementById('todo_list');
 const my_post = document.getElementById('my_post');
@@ -16,7 +121,7 @@ const btmIds = [
 
 // fetchDB(route)
 async function fetchDB(route) {
-	const res = await fetch(`http://localhost:7000/${route}`);
+	const res = await fetch(`http://192.168.0.45:3000/${route}`);
 	if (!res.ok) throw new Error('[fetchDB(route) 에러 발생]');
 	return res.json();
 };
@@ -24,7 +129,7 @@ async function fetchDB(route) {
 // postJSON(data, route)
 async function postJSON(data, route) {
 	try {
-		const res = await fetch(`http://localhost:7000/${route}`, {
+		const res = await fetch(`http://192.168.0.45:3000/${route}`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json;charset=UTF-8' },
 			body: JSON.stringify(data)
@@ -156,7 +261,8 @@ document.getElementById('todo_form').addEventListener('submit',
 			todo_content: this.querySelector('input').value
 		};
 		await postJSON(todoData, "todoAdd");
-		await resetMain();
+		this.closest('.modal').classList.add('hide');
+		resetMain();
 	}
 );
 
@@ -302,9 +408,9 @@ async function btnClick(e) { // nav 버튼 속 if문 안에 쓰임
 	postBtn(this.id); // post, write 게시글 리스트 출력 버튼
 	if (btnName == 'sign_btn') { // 회원가입 버튼
 		try {
-			const res = await fetch('http://localhost:7000/idCheck');
+			const res = await fetch('http://192.168.0.45:3000/idCheck');
+			if (!res.ok) throw new Error(`HTTP ${res.status}`);
 			const ID_data = await res.json(); // id 중복 체크 데이터를 가져옴
-			// console.log(ID_data);
 			idCheck = ID_data.map(value => value.USER_ID);
 		} catch (err) {
 			console.log(err);

@@ -28,10 +28,41 @@
 	</div>
 
 	<div id="main_div" class="container" name="home_btn">
-		<!-- 날씨 -->
+		<!-- ✅ 두 개의 날씨 위젯 -->
 		<div class="weather">
-			<div class="box">날씨</div>
-			<div class="box">날씨</div>
+			<!-- 첫 번째 위젯 -->
+			<div id="weatherBox1" class="weather-widget" data-city="Seoul">
+				<div class="weather-header">
+					<img id="weatherIcon1" src="" alt="날씨 아이콘" class="weather-icon">
+					<div>
+						<div id="weatherDesc1" class="weather-desc">날씨 로딩중...</div>
+						<div id="temp1" class="weather-temp">--°C</div>
+					</div>
+				</div>
+				<div id="location1" class="weather-location">서울</div>
+				<div id="time1" class="weather-time"></div>
+				<div class="weather-detail">
+					<div>💨 바람: <span id="wind1">--</span></div>
+					<div>💧 습도: <span id="humidity1">--%</span></div>
+				</div>
+			</div>
+
+			<!-- 두 번째 위젯 -->
+			<div id="weatherBox2" class="weather-widget" data-city="Busan">
+				<div class="weather-header">
+					<img id="weatherIcon2" src="" alt="날씨 아이콘" class="weather-icon">
+					<div>
+						<div id="weatherDesc2" class="weather-desc">날씨 로딩중...</div>
+						<div id="temp2" class="weather-temp">--°C</div>
+					</div>
+				</div>
+				<div id="location2" class="weather-location">부산</div>
+				<div id="time2" class="weather-time"></div>
+				<div class="weather-detail">
+					<div>💨 바람: <span id="wind2">--</span></div>
+					<div>💧 습도: <span id="humidity2">--%</span></div>
+				</div>
+			</div>
 		</div>
 
 		<!-- 리스트 -->
@@ -241,6 +272,34 @@
 				</form>
 				</form>
 			</div>
+		</div>
+	</div>
+
+	<!-- ✅ 지역 선택 모달 -->
+	<div id="cityModal" class="modal hide">
+		<div class="modal_body">
+			<h2>지역 선택</h2>
+			<select id="citySelect">
+				<option value="서울">서울</option>
+				<option value="부산">부산</option>
+				<option value="대구">대구</option>
+				<option value="인천">인천</option>
+				<option value="광주">광주</option>
+				<option value="대전">대전</option>
+				<option value="울산">울산</option>
+				<option value="수원">수원</option>
+				<option value="전주">전주</option>
+				<option value="창원">창원</option>
+				<option value="경산">경산</option>
+				<option value="청주">청주</option>
+				<option value="춘천">춘천</option>
+				<option value="포항">포항</option>
+				<option value="여수">여수</option>
+				<option value="목포">목포</option>
+				<option value="제주">제주</option>
+			</select>
+			<br><br>
+			<button id="cityConfirm">확인</button>
 		</div>
 	</div>
 
