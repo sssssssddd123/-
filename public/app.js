@@ -55,7 +55,8 @@ function online_check() {
 	});
 };
 
-function makeTodo(data, tag) { // to do list를 만들어 줌
+// to do list를 만들어 줌
+function makeTodo(data, tag) {
 	tb = document.createElement(tag);
 	data.forEach(item => {
 		td = document.createElement('td');
@@ -63,23 +64,63 @@ function makeTodo(data, tag) { // to do list를 만들어 줌
 		td.innerText = item["TODO_CONTENT"];
 		td.dataset.todo_no = item["TODO_NO"];
 		td.setAttribute('class', 'todo_item');
-		td.addEventListener('click', async function() {
+		td.addEventListener('click', async function() { // to do 삭제 기능
 			if (this.classList.contains('done')) {
 				const todoDel = confirm("삭제하시겠습니까?");
 				if (todoDel) {
 					const data = { todo_no: this.dataset.todo_no };
 					await postJSON(data, "todoDel");
-					console.log("test")
 					this.closest('tr').remove();
 				}
 			}
-			this.classList.toggle('done'); // 완료 표시 토글
+			this.classList.toggle('done'); // 완료 표시
 		});
 		tr.appendChild(td);
 		tb.appendChild(tr);
 	});
 	return tb;
 };
+
+// my 댓글 list를 만들어 줌
+function makeMyComList(data) {
+	const thisDiv = document.getElementById('my_comment');
+	data.forEach(item => {
+		span = document.createElement('span');
+		span.innerText = item["POST_COMMENT"];
+		span.dataset.comment_no = item["COMMENT_NO"];
+		span.setAttribute('class', 'myCom_item');
+		span.addEventListener('click', async function() { // my 댓글 삭제 기능
+			const myCommentDel = confirm("삭제하시겠습니까?");
+			if (myCommentDel) {
+				const data = { comment_no: this.dataset.comment_no };
+				await postJSON(data, "myCommentDel");
+				this.closest('span').remove();
+			}
+		});
+		thisDiv.appendChild(span);
+	});
+};
+
+// my Posts list를 만들어 줌
+function makeMyPostsList(data) {
+	const thisDiv = document.getElementById('my_post');
+	data.forEach(item => {
+		span = document.createElement('span');
+		span.innerText = item["POST_TITLE"];
+		span.dataset.post_no = item["POST_NO"];
+		span.setAttribute('class', 'myPost_item');
+		span.addEventListener('click', async function() { // my Posts 삭제 기능
+			const myCommentDel = confirm("삭제하시겠습니까?");
+			if (myCommentDel) {
+				const data = { post_no: this.dataset.post_no };
+				await postJSON(data, "myPostsDel");
+				this.closest('span').remove();
+			}
+		});
+		thisDiv.appendChild(span);
+	});
+};
+
 
 // 메인 화면
 // todo, 작성 글, 댓글
@@ -89,6 +130,22 @@ async function todoListAdd() { // to do list 만들기위한 DB를 가져옴
 	todo_list.innerHTML = "";
 	todo_list.appendChild(makeTodo(todoDB, 'todo_tbody'));
 };
+
+// 댓글 list를 화면에 출력해 줌
+async function myComListAdd() {
+	const data = { user_id: localStorage.getItem('user_id') };
+	const myComDB = await postJSON(data, "myCommentGet");
+	document.getElementById('my_comment').innerHTML = "";
+	makeMyComList(myComDB);
+}
+
+// Posts list를 화면에 출력해 줌
+async function myPostsListAdd() {
+	const data = { user_id: localStorage.getItem('user_id') };
+	const myPostsDB = await postJSON(data, "myPostsGet");
+	document.getElementById('my_post').innerHTML = "";
+	makeMyPostsList(myPostsDB);
+}
 
 // to do를 서버에 전송
 document.getElementById('todo_form').addEventListener('submit',
@@ -103,18 +160,18 @@ document.getElementById('todo_form').addEventListener('submit',
 	}
 );
 
-async function resetMain() { // main 화면 reset
+function resetMain() { // main 화면 reset
 	if (!is_online()) {
-		todo_list.textContent = "log off";
-		my_post.textContent = "log off";
-		my_comment.textContent = "log off";
+		todo_list.textContent = "로그인을 하시면 to do list를 이용하실 수 있습니다";
+		my_post.textContent = "내가 쓴 글들";
+		my_comment.textContent = "내가 작성한 댓글들";
 		document.querySelector(`[name="home_btn"]`).classList.remove('hide');
 		document.getElementById('log_off').classList.remove('hide');
 		document.getElementById('log_on').classList.add('hide');
 	} else {
-		await todoListAdd();
-		my_post.textContent = "test";
-		my_comment.textContent = "test";
+		todoListAdd(); // to do list 출력
+		myPostsListAdd() // my Posts list 출력
+		myComListAdd() // my 댓글 list 출력
 		document.querySelector(`[name="home_btn"]`).classList.remove('hide');
 		document.getElementById('log_off').classList.add('hide');
 		document.getElementById('log_on').classList.remove('hide');
@@ -227,16 +284,15 @@ btmIds.forEach(item => {
 async function btnClick(e) { // nav 버튼 속 if문 안에 쓰임
 	e.preventDefault();
 	const btnName = this.dataset.name;
+	if (btnName == "to_do_btn") {
+		if (!is_online()) {
+			online_check();
+			return;
+		}
+		document.querySelector(`[name="to_do_btn"]`).classList.remove('hide');
+	};
 	btmIds.forEach(item => {
 		const section = document.querySelector(`[name="${item}"]`);
-		if (section.getAttribute('name') == "to_do_btn") {
-			console.log(section.getAttribute('name'));
-			console.log(this.getAttribute('name')); // 모든 버튼을 눌러도 작동 되는데 to do list 버튼을 누르면 작동하도록 에러 수정하기
-			// if (!is_online()) {
-			// 	online_check();
-			// 	return;
-			// }
-		};
 		if (item != btnName) {
 			section.classList.add('hide');
 			return;

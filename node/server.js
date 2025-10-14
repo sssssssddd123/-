@@ -60,7 +60,7 @@ app.get("/posts", async (req, res) => {
     user_id,
     TO_CHAR(created_at, 'YY-MM-DD HH24:MI') AS CREATED_AT
 		FROM post
-		ORDER BY created_at DESC
+		ORDER BY post_no DESC
 		`
 		let result = await connection.execute(sql);
 		res.status(200).json(result.rows);
@@ -297,6 +297,7 @@ app.post("/todoAdd", async (req, res) => {
 	}
 });
 
+// to do DB 가져오기
 app.post("/todoDBget", async (req, res) => {
 	let connection;
 	try {
@@ -324,8 +325,7 @@ app.post("/todoDBget", async (req, res) => {
 	}
 });
 
-
-
+// to do DB 삭제
 app.post("/todoDel", async (req, res) => {
 	let connection;
 	try {
@@ -336,6 +336,118 @@ app.post("/todoDel", async (req, res) => {
 		`;
 		const binds = {
 			todo_no: req.body.todo_no
+		};
+		await connection.execute(sql, binds, { autoCommit: true });
+		res.status(200).json([]);
+	} catch (err) {
+		console.log(err);
+	} finally {
+		if (connection) {
+			try {
+				await connection.close();
+				console_success("app.post /todoAdd");
+			} catch (err) {
+				console.log(err);
+			}
+		}
+	}
+});
+
+// my Posts DB 가져오기
+app.post("/myPostsGet", async (req, res) => {
+	let connection;
+	try {
+		connection = await oracledb.getConnection(dbConfig.poolAlias);
+		let sql = `
+		SELECT post_no, user_id, post_title
+		FROM post
+		WHERE user_id = :user_id
+		ORDER BY post_no DESC
+		`;
+		const binds = { user_id: req.body.user_id };
+		const result = await connection.execute(sql, binds, { autoCommit: true });
+		res.status(200).json(result.rows);
+	} catch (err) {
+		console.log(err);
+	} finally {
+		if (connection) {
+			try {
+				await connection.close();
+				console_success("app.post /myPostsGet");
+			} catch (err) {
+				console.log(err);
+			}
+		}
+	}
+});
+
+// my Posts DB 삭제
+app.post("/myPostsDel", async (req, res) => {
+	let connection;
+	try {
+		connection = await oracledb.getConnection(dbConfig.poolAlias);
+		let sql = `
+		DELETE FROM post
+		WHERE post_no = :post_no
+		`;
+		const binds = {
+			post_no: req.body.post_no
+		};
+		await connection.execute(sql, binds, { autoCommit: true });
+		res.status(200).json([]);
+	} catch (err) {
+		console.log(err);
+	} finally {
+		if (connection) {
+			try {
+				await connection.close();
+				console_success("app.post /todoAdd");
+			} catch (err) {
+				console.log(err);
+			}
+		}
+	}
+});
+
+// my 댓글 DB 가져오기
+app.post("/myCommentGet", async (req, res) => {
+	let connection;
+	try {
+		connection = await oracledb.getConnection(dbConfig.poolAlias);
+		let sql = `
+		SELECT comment_no, user_id, post_comment
+		FROM comment_all
+		WHERE user_id = :user_id
+		ORDER BY comment_no DESC
+		`;
+		const binds = { user_id: req.body.user_id };
+		const result = await connection.execute(sql, binds, { autoCommit: true });
+		res.status(200).json(result.rows);
+	} catch (err) {
+		console.log(err);
+	} finally {
+		if (connection) {
+			try {
+				await connection.close();
+				console_success("app.post /myCommentGet");
+			} catch (err) {
+				console.log(err);
+			}
+		}
+	}
+});
+
+// my 댓글 DB 삭제
+app.post("/myCommentDel", async (req, res) => {
+	let connection;
+	try {
+		connection = await oracledb.getConnection(dbConfig.poolAlias);
+		let sql = `
+		DELETE FROM comment_all
+		WHERE comment_no = :comment_no
+		`;
+		const binds = {
+			comment_no: req.body.comment_no
 		};
 		await connection.execute(sql, binds, { autoCommit: true });
 		res.status(200).json([]);

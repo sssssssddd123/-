@@ -243,14 +243,25 @@ SELECT * FROM users;
 SELECT * FROM post;
 SELECT * FROM comment_all;
 SELECT * FROM todolist;
+
+UPDATE post
+    SET post_title = '10월 14일 최종 제목 test'
+    WHERE post_no = 11;
 --------------------------------------------------------------------------------
 SELECT * FROM post ORDER BY post_no DESC;
 
 SELECT * FROM post
 WHERE user_id = 'seung';
 
-SELECT * FROM comment_all
-WHERE user_id = 'seung';
+SELECT post_no, user_id, post_title
+FROM post
+WHERE user_id = 'seung'
+ORDER BY post_no DESC;
+
+SELECT comment_no, user_id, post_comment
+FROM comment_all
+WHERE user_id = 'seung'
+ORDER BY comment_no DESC;
 
 ALTER TABLE post
     MODIFY post_title VARCHAR2(50 BYTE);
@@ -290,9 +301,14 @@ SELECT
 FROM post
 ORDER BY created_at DESC;
 
+SELECT todo_no, todo_content
+FROM todolist
+WHERE user_id = :user_id
+ORDER BY todo_no DESC;
+
 SELECT user_id, post_no, post_comment
-		FROM comment_all
-		ORDER BY comment_no DESC;
+FROM comment_all
+ORDER BY comment_no DESC;
 
 SELECT 
     c.user_id,

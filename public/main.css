@@ -79,7 +79,7 @@ body {
 
 /* 리스트 */
 .list-small {
-	height: 25px;
+	height: 20px;
 	background-color: rgba(255, 231, 192, 0.7);
 	font-size: 1.1rem;
 }
@@ -644,6 +644,10 @@ body {
 	box-sizing: border-box;
 }
 
+#todo_title {
+	width: calc(120%);
+}
+
 .todo_form input:focus {
 	border-color: #FFD78C;
 	box-shadow: 0 0 4px rgba(255, 169, 77, 0.4);
@@ -664,7 +668,7 @@ body {
 	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 	transition: background-color 0.2s, transform 0.1s;
 	white-space: nowrap;
-	/* ✅ margin-left 제거 */
+	margin-left: auto;
 }
 
 .todo_submit_btn:hover {
@@ -803,7 +807,6 @@ body {
 	background: rgba(255, 240, 200, 0.7);
 }
 
-
 .todo_table td {
 	text-align: left !important;
 	/* ✅ 강제로 왼쪽 정렬 */
@@ -835,6 +838,99 @@ body {
 	background-color: rgba(0, 0, 0, 0.2);
 	border-radius: 4px;
 }
+
+/* ✅ my_comment 영역 (댓글 리스트) */
+#my_comment {
+	display: block;
+	/* 🔥 flex → block으로 변경 */
+	text-align: left;
+	padding: 10px;
+	height: 220px;
+	/* 기존 높이 유지 */
+	overflow-y: auto;
+	/* ✅ 스크롤 가능 */
+	scrollbar-width: thin;
+	scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+	-webkit-overflow-scrolling: touch;
+	box-sizing: border-box;
+}
+
+/* ✅ my_post 영역 (작성글 리스트) */
+#my_post {
+	display: block;
+	/* 🔥 flex → block으로 변경 */
+	text-align: left;
+	padding: 10px;
+	height: 220px;
+	/* 기존 높이 유지 */
+	overflow-y: auto;
+	/* ✅ 스크롤 가능 */
+	scrollbar-width: thin;
+	scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+	-webkit-overflow-scrolling: touch;
+	box-sizing: border-box;
+}
+
+/* ✅ 공통 스크롤바 스타일 */
+#my_comment::-webkit-scrollbar,
+#my_post::-webkit-scrollbar {
+	width: 6px;
+}
+
+#my_comment::-webkit-scrollbar-thumb,
+#my_post::-webkit-scrollbar-thumb {
+	background-color: rgba(0, 0, 0, 0.2);
+	border-radius: 4px;
+}
+
+/* ✅ 공통 항목 스타일 (.myCom_item, .myPost_item) */
+.myCom_item,
+.myPost_item {
+	display: block;
+	width: 100%;
+	background: #fffdf7;
+	border-radius: 10px;
+	padding: 3px 14px;
+	margin-bottom: 3px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	font-size: 0.9rem;
+	color: #333;
+	font-family: 'Nanum Gothic', sans-serif;
+	cursor: pointer;
+	text-align: left;
+	transition: transform 0.1s ease, box-shadow 0.2s ease;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	box-sizing: border-box;
+}
+
+/* hover 시 */
+.myCom_item:hover,
+.myPost_item:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+}
+
+/* 클릭 시 */
+.myCom_item:active,
+.myPost_item:active {
+	transform: scale(0.98);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 완료 표시 */
+.myCom_item.done,
+.myPost_item.done {
+	text-decoration: line-through;
+	color: #999;
+	background: rgba(255, 240, 200, 0.7);
+}
+
+
+
+
+
 
 .hide {
 	display: none;
